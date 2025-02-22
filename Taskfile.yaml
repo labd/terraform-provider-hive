@@ -1,0 +1,47 @@
+version: '3'
+
+tasks:
+  build-local:
+    cmds:
+      - go build -o terraform-provider-hive_{{ .VERSION }}
+      - mkdir -p ~/.terraform.d/plugins/registry.terraform.io/labd/hive/{{ .VERSION }}/{{ .PLATFORM }}/
+      - mv terraform-provider-hive_{{ .VERSION }} ~/.terraform.d/plugins/registry.terraform.io/labd/hive/{{ .VERSION }}/{{ .PLATFORM }}/terraform-provider-hive_v{{ .VERSION }}
+      - cmd: codesign --deep --force -s - ~/.terraform.d/plugins/registry.terraform.io/labd/hive/{{ .VERSION }}/{{ .PLATFORM }}/terraform-provider-hive_v{{ .VERSION }}
+        platforms: [ darwin ]
+    vars:
+      VERSION: 99.0.0
+      PLATFORM:
+        sh: echo "$(go env GOOS)_$(go env GOARCH)"
+
+  build:
+    env:
+      GORELEASER_CURRENT_TAG: "v0.0.0"
+    cmd: goreleaser build --snapshot --clean --single-target --output mach-composer
+
+  generate:
+    cmds:
+      - go run github.com/Khan/genqlient
+      - cd tools; go generate ./...
+
+  format:
+    cmds:
+      - go fmt ./...
+      - terraform fmt -recursive -write=true ./examples/
+
+  test:
+    cmds:
+      - go test -v ./...
+
+  docs:
+    cmds:
+      - go generate ./...
+
+  coverage-html:
+    cmds:
+      - go test -race -coverprofile=coverage.txt -covermode=atomic -coverpkg=./... ./...
+      - go tool cover -html=coverage.txt
+
+  coverage:
+    cmds:
+      - go test -race -coverprofile=coverage.txt -covermode=atomic -coverpkg=./... ./...
+      - go tool cover -func=coverage.txt
