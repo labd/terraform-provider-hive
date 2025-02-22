@@ -1,0 +1,13 @@
+terraform-provider-*
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tf
+*.graphql
+*.backup
+coverage.out
+dist/
+/local
+/.idea
+/.env
+/NOTES.md

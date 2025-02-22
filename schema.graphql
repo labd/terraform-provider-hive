@@ -1,0 +1,3435 @@
+"""
+This schema is generated from via `pnpm graphql:generate` in
+https://github.com/graphql-hive/console
+
+There is one minor change made to the schema for input `TargetReferenceInput` to
+remove the @oneOf directive.
+"""
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type ActivateAppDeploymentError implements Error {
+  message: String!
+}
+
+input ActivateAppDeploymentInput {
+  appName: String!
+  appVersion: String!
+  target: TargetReferenceInput
+}
+
+type ActivateAppDeploymentOk {
+  activatedAppDeployment: AppDeployment!
+  """
+  Whether the app deployment activation was skipped because it is already activated.
+  """
+  isSkipped: Boolean!
+}
+
+type ActivateAppDeploymentResult {
+  error: ActivateAppDeploymentError
+  ok: ActivateAppDeploymentOk
+}
+
+type AddAlertChannelError implements Error {
+  inputErrors: AddAlertChannelInputErrors!
+  message: String!
+}
+
+input AddAlertChannelInput {
+  name: String!
+  organizationSlug: String!
+  projectSlug: String!
+  slack: SlackChannelInput
+  type: AlertChannelType!
+  webhook: WebhookChannelInput
+}
+
+type AddAlertChannelInputErrors {
+  name: String
+  slackChannel: String
+  webhookEndpoint: String
+}
+
+type AddAlertChannelOk {
+  addedAlertChannel: AlertChannel!
+  updatedProject: Project!
+}
+
+type AddAlertChannelResult {
+  error: AddAlertChannelError
+  ok: AddAlertChannelOk
+}
+
+type AddAlertError implements Error {
+  message: String!
+}
+
+input AddAlertInput {
+  channelId: ID!
+  organizationSlug: String!
+  projectSlug: String!
+  targetSlug: String!
+  type: AlertType!
+}
+
+type AddAlertOk {
+  addedAlert: Alert!
+  updatedProject: Project!
+}
+
+type AddAlertResult {
+  error: AddAlertError
+  ok: AddAlertOk
+}
+
+type AddDocumentsToAppDeploymentError implements Error {
+  """Optional details if the error is related to a specific document."""
+  details: AddDocumentsToAppDeploymentErrorDetails
+  message: String!
+}
+
+type AddDocumentsToAppDeploymentErrorDetails {
+  """Index of the document sent from the client."""
+  index: Int!
+  """Error message for the document at the given index."""
+  message: String!
+}
+
+input AddDocumentsToAppDeploymentInput {
+  """Name of the app."""
+  appName: String!
+  """The version of the app"""
+  appVersion: String!
+  """
+  A list of operations to add to the app deployment. (max 100 per single batch)
+  """
+  documents: [DocumentInput!]!
+  target: TargetReferenceInput
+}
+
+type AddDocumentsToAppDeploymentOk {
+  appDeployment: AppDeployment!
+}
+
+type AddDocumentsToAppDeploymentResult {
+  error: AddDocumentsToAppDeploymentError
+  ok: AddDocumentsToAppDeploymentOk
+}
+
+input AddGitHubIntegrationInput {
+  installationId: ID!
+  organizationSlug: String!
+}
+
+input AddSlackIntegrationInput {
+  organizationSlug: String!
+  token: String!
+}
+
+type AdminGeneralStats {
+  operationsOverTime: [AdminOperationPoint!]!
+}
+
+type AdminOperationPoint {
+  count: SafeInt!
+  date: DateTime!
+}
+
+type AdminOrganizationStats {
+  operations: SafeInt!
+  organization: Organization!
+  persistedOperations: Int!
+  projects: Int!
+  targets: Int!
+  users: Int!
+  versions: Int!
+}
+
+type AdminQuery {
+  stats(period: DateRangeInput!, resolution: Int!): AdminStats!
+}
+
+type AdminStats {
+  general: AdminGeneralStats!
+  organizations: [AdminOrganizationStats!]!
+}
+
+type Alert {
+  channel: AlertChannel!
+  id: ID!
+  target: Target!
+  type: AlertType!
+}
+
+interface AlertChannel {
+  id: ID!
+  name: String!
+  type: AlertChannelType!
+}
+
+enum AlertChannelType {
+  MSTEAMS_WEBHOOK
+  SLACK
+  WEBHOOK
+}
+
+type AlertSlackChannel implements AlertChannel {
+  channel: String!
+  id: ID!
+  name: String!
+  type: AlertChannelType!
+}
+
+enum AlertType {
+  SCHEMA_CHANGE_NOTIFICATIONS
+}
+
+type AlertWebhookChannel implements AlertChannel {
+  endpoint: String!
+  id: ID!
+  name: String!
+  type: AlertChannelType!
+}
+
+type AnswerOrganizationTransferRequestError implements Error {
+  message: String!
+}
+
+input AnswerOrganizationTransferRequestInput {
+  accept: Boolean!
+  code: String!
+  organizationSlug: String!
+}
+
+type AnswerOrganizationTransferRequestOk {
+  accepted: Boolean!
+}
+
+"""@oneOf"""
+type AnswerOrganizationTransferRequestResult {
+  error: AnswerOrganizationTransferRequestError
+  ok: AnswerOrganizationTransferRequestOk
+}
+
+type AppDeployment {
+  documents(after: String, first: Int): GraphQLDocumentConnection
+  id: ID!
+  """
+  The last time a GraphQL request that used the app deployment was reported.
+  """
+  lastUsed: DateTime
+  name: String!
+  status: AppDeploymentStatus!
+  totalDocumentCount: Int!
+  version: String!
+}
+
+type AppDeploymentConnection {
+  edges: [AppDeploymentEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AppDeploymentEdge {
+  cursor: String!
+  node: AppDeployment!
+}
+
+input AppDeploymentOperation {
+  """GraphQL operation body."""
+  body: String!
+  """GraphQL operation hash."""
+  hash: String!
+}
+
+input AppDeploymentResourceAssignmentInput {
+  appDeployment: String!
+}
+
+enum AppDeploymentStatus {
+  active
+  pending
+  retired
+}
+
+type ApproveFailedSchemaCheckError {
+  message: String!
+}
+
+input ApproveFailedSchemaCheckInput {
+  """
+  Optional comment visible in the schema check.
+  Give a reason why the schema check was approved.
+  """
+  comment: String
+  organizationSlug: String!
+  projectSlug: String!
+  schemaCheckId: ID!
+  targetSlug: String!
+}
+
+type ApproveFailedSchemaCheckOk {
+  schemaCheck: SchemaCheck!
+}
+
+type ApproveFailedSchemaCheckResult {
+  error: ApproveFailedSchemaCheckError
+  ok: ApproveFailedSchemaCheckOk
+}
+
+type AssignMemberRoleError implements Error {
+  message: String!
+}
+
+input AssignMemberRoleInput {
+  organizationSlug: String!
+  resources: ResourceAssignmentInput!
+  roleId: ID!
+  userId: ID!
+}
+
+type AssignMemberRoleOk {
+  previousMemberRole: MemberRole
+  updatedMember: Member!
+}
+
+"""@oneOf"""
+type AssignMemberRoleResult {
+  error: AssignMemberRoleError
+  ok: AssignMemberRoleOk
+}
+
+input AuditLogFilter {
+  endDate: DateTime!
+  startDate: DateTime!
+}
+
+enum AuthProvider {
+  GITHUB
+  GOOGLE
+  """OpenID Connect"""
+  OIDC
+  """Username-Password-Authentication"""
+  USERNAME_PASSWORD
+}
+
+type BillingConfiguration {
+  billingAddress: BillingDetails
+  canUpdateSubscription: Boolean!
+  hasActiveSubscription: Boolean!
+  hasPaymentIssues: Boolean!
+  invoices: [BillingInvoice!]
+  paymentMethod: BillingPaymentMethod
+  upcomingInvoice: BillingInvoice
+}
+
+type BillingDetails {
+  city: String
+  country: String
+  line1: String
+  line2: String
+  postalCode: String
+  state: String
+}
+
+type BillingInvoice {
+  amount: Float!
+  date: DateTime!
+  id: ID!
+  pdfLink: String
+  periodEnd: DateTime!
+  periodStart: DateTime!
+  status: BillingInvoiceStatus!
+}
+
+enum BillingInvoiceStatus {
+  DRAFT
+  OPEN
+  PAID
+  UNCOLLECTIBLE
+  VOID
+}
+
+type BillingPaymentMethod {
+  brand: String!
+  expMonth: Int!
+  expYear: Int!
+  last4: String!
+}
+
+type BillingPlan {
+  basePrice: Float
+  description: String
+  id: ID!
+  includedOperationsLimit: SafeInt
+  name: String!
+  planType: BillingPlanType!
+  pricePerOperationsUnit: Float
+  rateLimit: UsageRateLimitType!
+  retentionInDays: Int!
+}
+
+enum BillingPlanType {
+  ENTERPRISE
+  HOBBY
+  PRO
+}
+
+enum BreakingChangeFormula {
+  PERCENTAGE
+  REQUEST_COUNT
+}
+
+type BreakingChangeMetadataTarget {
+  name: String!
+  target: Target
+}
+
+type CdnAccessToken {
+  alias: String!
+  createdAt: DateTime!
+  firstCharacters: String!
+  id: ID!
+  lastCharacters: String!
+}
+
+type CdnAccessTokenCreateError implements Error {
+  message: String!
+}
+
+type CdnAccessTokenCreateOk {
+  cdnUrl: String!
+  createdCdnAccessToken: CdnAccessToken!
+  secretAccessToken: String!
+}
+
+"""@oneOf"""
+type CdnAccessTokenCreateResult {
+  error: CdnAccessTokenCreateError
+  ok: CdnAccessTokenCreateOk
+}
+
+type CdnTokenResult {
+  token: String!
+  url: String!
+}
+
+type ChangePlanResult {
+  newPlan: BillingPlanType!
+  organization: Organization!
+  previousPlan: BillingPlanType!
+}
+
+type ClientNameStatsValues {
+  count: Float!
+  name: String!
+}
+
+type ClientStats {
+  operations: OperationStatsValuesConnection!
+  requestsOverTime(resolution: Int!): [RequestsOverTime!]!
+  totalRequests: SafeInt!
+  totalVersions: SafeInt!
+  versions(limit: Int!): [ClientVersionStatsValues!]!
+}
+
+input ClientStatsByTargetsInput {
+  organizationSlug: String!
+  period: DateRangeInput!
+  projectSlug: String!
+  targetIds: [ID!]!
+}
+
+input ClientStatsInput {
+  client: String!
+  organizationSlug: String!
+  period: DateRangeInput!
+  projectSlug: String!
+  targetSlug: String!
+}
+
+type ClientStatsValues {
+  count: Float!
+  name: String!
+  percentage: Float!
+  versions: [ClientVersionStatsValues!]!
+}
+
+type ClientStatsValuesConnection {
+  nodes: [ClientStatsValues!]!
+  total: Int!
+}
+
+type ClientVersionStatsValues {
+  count: Float!
+  percentage: Float!
+  version: String!
+}
+
+type CodePosition {
+  column: Int!
+  line: Int!
+}
+
+type CompositeSchema {
+  author: String!
+  commit: ID!
+  date: DateTime!
+  id: ID!
+  metadata: String
+  service: String
+  source: String!
+  url: String
+}
+
+type Contract {
+  """The URL for accessing this contracts's artifacts via the CDN."""
+  cdnUrl: String!
+  contractName: String!
+  createdAt: DateTime!
+  excludeTags: [String!]
+  id: ID!
+  includeTags: [String!]
+  isDisabled: Boolean!
+  removeUnreachableTypesFromPublicApiSchema: Boolean!
+  target: Target!
+  viewerCanDisableContract: Boolean!
+}
+
+"""Schema check result for contracts"""
+type ContractCheck {
+  breakingSchemaChanges: SchemaChangeConnection
+  compositeSchemaSDL: String
+  contractName: String!
+  """The contract version against this check was performed."""
+  contractVersion: ContractVersion
+  """Whether this schema check has any schema changes."""
+  hasSchemaChanges: Boolean!
+  """Whether this schema check has any composition errors."""
+  hasSchemaCompositionErrors: Boolean!
+  """Whether this schema check has any breaking changes."""
+  hasUnapprovedBreakingChanges: Boolean!
+  id: ID!
+  isSuccess: Boolean!
+  safeSchemaChanges: SchemaChangeConnection
+  schemaCompositionErrors: SchemaErrorConnection
+  supergraphSDL: String
+}
+
+type ContractCheckConnection {
+  edges: [ContractCheckEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ContractCheckEdge {
+  cursor: String!
+  node: ContractCheck!
+}
+
+type ContractConnection {
+  edges: [ContractEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ContractEdge {
+  cursor: String!
+  node: Contract!
+}
+
+type ContractVersion {
+  """Breaking schema changes for this contract version."""
+  breakingSchemaChanges: SchemaChangeConnection
+  compositeSchemaSDL: String
+  contractName: String!
+  createdAt: String!
+  """Whether this contract versions has schema changes."""
+  hasSchemaChanges: Boolean!
+  id: ID!
+  """Whether this contract version is composable."""
+  isComposable: Boolean!
+  isFirstComposableVersion: Boolean!
+  previousContractVersion: ContractVersion
+  previousDiffableContractVersion: ContractVersion
+  """Safe schema changes for this contract version."""
+  safeSchemaChanges: SchemaChangeConnection
+  schemaCompositionErrors: SchemaErrorConnection
+  supergraphSDL: String
+}
+
+type ContractVersionConnection {
+  edges: [ContractVersionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type ContractVersionEdge {
+  cursor: String!
+  node: ContractVersion!
+}
+
+type CreateAppDeploymentError implements Error {
+  details: CreateAppDeploymentErrorDetails
+  message: String!
+}
+
+type CreateAppDeploymentErrorDetails {
+  """Error message for the input app name."""
+  appName: String
+  """Error message for the input app version."""
+  appVersion: String
+}
+
+input CreateAppDeploymentInput {
+  appName: String!
+  appVersion: String!
+  target: TargetReferenceInput
+}
+
+type CreateAppDeploymentOk {
+  createdAppDeployment: AppDeployment!
+}
+
+type CreateAppDeploymentResult {
+  error: CreateAppDeploymentError
+  ok: CreateAppDeploymentOk
+}
+
+input CreateCdnAccessTokenInput {
+  alias: String!
+  selector: TargetSelectorInput!
+}
+
+input CreateContractInput {
+  contractName: String!
+  excludeTags: [String!]
+  includeTags: [String!]
+  removeUnreachableTypesFromPublicApiSchema: Boolean!
+  targetId: ID!
+}
+
+type CreateContractInputErrors {
+  contractName: String
+  excludeTags: String
+  includeTags: String
+  targetId: String
+}
+
+type CreateContractResult {
+  error: CreateContractResultError
+  ok: CreateContractResultOk
+}
+
+type CreateContractResultError implements Error {
+  details: CreateContractInputErrors!
+  message: String!
+}
+
+type CreateContractResultOk {
+  createdContract: Contract!
+}
+
+input CreateDocumentCollectionInput {
+  description: String
+  name: String!
+}
+
+input CreateDocumentCollectionOperationInput {
+  collectionId: ID!
+  headers: String
+  name: String!
+  query: String!
+  variables: String
+}
+
+type CreateMemberRoleError implements Error {
+  """The detailed validation error messages for the input fields."""
+  inputErrors: CreateMemberRoleInputErrors
+  message: String!
+}
+
+input CreateMemberRoleInput {
+  description: String!
+  name: String!
+  organizationSlug: String!
+  selectedPermissions: [String!]!
+}
+
+type CreateMemberRoleInputErrors {
+  description: String
+  name: String
+}
+
+type CreateMemberRoleOk {
+  updatedOrganization: Organization!
+}
+
+"""@oneOf"""
+type CreateMemberRoleResult {
+  error: CreateMemberRoleError
+  ok: CreateMemberRoleOk
+}
+
+type CreateOIDCIntegrationError implements Error {
+  details: CreateOIDCIntegrationErrorDetails!
+  message: String!
+}
+
+type CreateOIDCIntegrationErrorDetails {
+  authorizationEndpoint: String
+  clientId: String
+  clientSecret: String
+  tokenEndpoint: String
+  userinfoEndpoint: String
+}
+
+input CreateOIDCIntegrationInput {
+  authorizationEndpoint: String!
+  clientId: ID!
+  clientSecret: String!
+  organizationId: ID!
+  tokenEndpoint: String!
+  userinfoEndpoint: String!
+}
+
+type CreateOIDCIntegrationOk {
+  createdOIDCIntegration: OIDCIntegration!
+  organization: Organization!
+}
+
+type CreateOIDCIntegrationResult {
+  error: CreateOIDCIntegrationError
+  ok: CreateOIDCIntegrationOk
+}
+
+type CreateOrganizationError implements Error {
+  inputErrors: CreateOrganizationInputErrors!
+  message: String!
+}
+
+input CreateOrganizationInput {
+  slug: String!
+}
+
+type CreateOrganizationInputErrors {
+  slug: String
+}
+
+type CreateOrganizationOk {
+  createdOrganizationPayload: OrganizationPayload!
+}
+
+"""@oneOf"""
+type CreateOrganizationResult {
+  error: CreateOrganizationError
+  ok: CreateOrganizationOk
+}
+
+type CreateProjectError implements Error {
+  inputErrors: CreateProjectInputErrors!
+  message: String!
+}
+
+input CreateProjectInput {
+  organizationSlug: String!
+  slug: String!
+  type: ProjectType!
+}
+
+type CreateProjectInputErrors {
+  slug: String
+}
+
+type CreateProjectOk {
+  createdProject: Project!
+  createdTargets: [Target!]!
+  updatedOrganization: Organization!
+}
+
+type CreateProjectResult {
+  error: CreateProjectError
+  ok: CreateProjectOk
+}
+
+type CreateTargetError implements Error {
+  inputErrors: CreateTargetInputErrors!
+  message: String!
+}
+
+input CreateTargetInput {
+  organizationSlug: String!
+  projectSlug: String!
+  slug: String!
+}
+
+type CreateTargetInputErrors {
+  slug: String
+}
+
+type CreateTargetOk {
+  createdTarget: Target!
+  selector: TargetSelector!
+}
+
+type CreateTargetResult {
+  error: CreateTargetError
+  ok: CreateTargetOk
+}
+
+type CreateTokenError implements Error {
+  message: String!
+}
+
+input CreateTokenInput {
+  name: String!
+  organizationScopes: [OrganizationAccessScope!]!
+  organizationSlug: String!
+  projectScopes: [ProjectAccessScope!]!
+  projectSlug: String!
+  targetScopes: [TargetAccessScope!]!
+  targetSlug: String!
+}
+
+type CreateTokenOk {
+  createdToken: Token!
+  secret: String!
+  selector: TargetSelector!
+}
+
+type CreateTokenPayload {
+  createdToken: Token!
+  secret: String!
+  selector: TargetSelector!
+}
+
+type CreateTokenResult {
+  error: CreateTokenError
+  ok: CreateTokenOk
+}
+
+enum CriticalityLevel {
+  Breaking
+  Dangerous
+  Safe
+}
+
+scalar Date
+
+type DateRange {
+  from: DateTime!
+  to: DateTime!
+}
+
+input DateRangeInput {
+  from: DateTime!
+  to: DateTime!
+}
+
+scalar DateTime
+
+type DeleteAlertChannelsError implements Error {
+  message: String!
+}
+
+input DeleteAlertChannelsInput {
+  channelIds: [ID!]!
+  organizationSlug: String!
+  projectSlug: String!
+}
+
+type DeleteAlertChannelsOk {
+  updatedProject: Project!
+}
+
+type DeleteAlertChannelsResult {
+  error: DeleteAlertChannelsError
+  ok: DeleteAlertChannelsOk
+}
+
+type DeleteAlertsError implements Error {
+  message: String!
+}
+
+input DeleteAlertsInput {
+  alertIds: [ID!]!
+  organizationSlug: String!
+  projectSlug: String!
+}
+
+type DeleteAlertsOk {
+  updatedProject: Project!
+}
+
+type DeleteAlertsResult {
+  error: DeleteAlertsError
+  ok: DeleteAlertsOk
+}
+
+type DeleteCdnAccessTokenError implements Error {
+  message: String!
+}
+
+input DeleteCdnAccessTokenInput {
+  cdnAccessTokenId: ID!
+  selector: TargetSelectorInput!
+}
+
+type DeleteCdnAccessTokenOk {
+  deletedCdnAccessTokenId: ID!
+}
+
+"""@oneOf"""
+type DeleteCdnAccessTokenResult {
+  error: DeleteCdnAccessTokenError
+  ok: DeleteCdnAccessTokenOk
+}
+
+type DeleteDocumentCollectionOkPayload {
+  deletedId: ID!
+  updatedTarget: Target!
+}
+
+type DeleteDocumentCollectionOperationOkPayload {
+  deletedId: ID!
+  updatedCollection: DocumentCollection!
+  updatedTarget: Target!
+}
+
+"""@oneOf"""
+type DeleteDocumentCollectionOperationResult {
+  error: ModifyDocumentCollectionError
+  ok: DeleteDocumentCollectionOperationOkPayload
+}
+
+"""@oneOf"""
+type DeleteDocumentCollectionResult {
+  error: ModifyDocumentCollectionError
+  ok: DeleteDocumentCollectionOkPayload
+}
+
+type DeleteGitHubIntegrationResult {
+  organization: Organization!
+}
+
+type DeleteMemberRoleError implements Error {
+  message: String!
+}
+
+input DeleteMemberRoleInput {
+  organizationSlug: String!
+  roleId: ID!
+}
+
+type DeleteMemberRoleOk {
+  updatedOrganization: Organization!
+}
+
+"""@oneOf"""
+type DeleteMemberRoleResult {
+  error: DeleteMemberRoleError
+  ok: DeleteMemberRoleOk
+}
+
+type DeleteOIDCIntegrationError implements Error {
+  message: String!
+}
+
+input DeleteOIDCIntegrationInput {
+  oidcIntegrationId: ID!
+}
+
+type DeleteOIDCIntegrationOk {
+  organization: Organization!
+}
+
+type DeleteOIDCIntegrationResult {
+  error: DeleteOIDCIntegrationError
+  ok: DeleteOIDCIntegrationOk
+}
+
+type DeleteOrganizationInvitationError implements Error {
+  message: String!
+}
+
+input DeleteOrganizationInvitationInput {
+  email: String!
+  organizationSlug: String!
+}
+
+"""@oneOf"""
+type DeleteOrganizationInvitationResult {
+  error: DeleteOrganizationInvitationError
+  ok: OrganizationInvitation
+}
+
+type DeleteProjectPayload {
+  deletedProject: Project!
+  selector: ProjectSelector!
+}
+
+type DeleteSlackIntegrationResult {
+  organization: Organization!
+}
+
+type DeleteTargetPayload {
+  deletedTarget: Target!
+  selector: TargetSelector!
+}
+
+input DeleteTokensInput {
+  organizationSlug: String!
+  projectSlug: String!
+  targetSlug: String!
+  tokenIds: [ID!]!
+}
+
+type DeleteTokensPayload {
+  deletedTokens: [ID!]!
+  selector: TargetSelector!
+}
+
+type DeletedSchemaLog {
+  date: DateTime!
+  deletedService: String!
+  id: ID!
+  """The previous SDL of the full schema or subgraph."""
+  previousServiceSdl: String
+}
+
+type DeprecatedSchemaExplorer {
+  types: [GraphQLNamedType!]!
+}
+
+input DeprecatedSchemaExplorerUsageInput {
+  period: DateRangeInput!
+}
+
+input DisableContractInput {
+  contractId: ID!
+}
+
+type DisableContractResult {
+  error: DisableContractResultError
+  ok: DisableContractResultOk
+}
+
+type DisableContractResultError implements Error {
+  message: String!
+}
+
+type DisableContractResultOk {
+  disabledContract: Contract!
+}
+
+input DisableExternalSchemaCompositionInput {
+  organizationSlug: String!
+  projectSlug: String!
+}
+
+"""@oneOf"""
+type DisableExternalSchemaCompositionResult {
+  error: String
+  ok: Project
+}
+
+type DocumentCollection {
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  name: String!
+  operations(after: String = null, first: Int = 100): DocumentCollectionOperationsConnection!
+  updatedAt: DateTime!
+}
+
+type DocumentCollectionConnection {
+  edges: [DocumentCollectionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type DocumentCollectionEdge {
+  cursor: String!
+  node: DocumentCollection!
+}
+
+type DocumentCollectionOperation {
+  collection: DocumentCollection!
+  createdAt: DateTime!
+  headers: String
+  id: ID!
+  name: String!
+  query: String!
+  updatedAt: DateTime!
+  variables: String
+}
+
+type DocumentCollectionOperationEdge {
+  cursor: String!
+  node: DocumentCollectionOperation!
+}
+
+type DocumentCollectionOperationsConnection {
+  edges: [DocumentCollectionOperationEdge!]!
+  pageInfo: PageInfo!
+}
+
+input DocumentInput {
+  """GraphQL operation body."""
+  body: String!
+  """GraphQL operation hash."""
+  hash: String!
+}
+
+input DowngradeToHobbyInput {
+  organization: OrganizationSelectorInput!
+}
+
+type DurationOverTime {
+  date: DateTime!
+  duration: DurationValues!
+}
+
+type DurationValues {
+  avg: Int!
+  p75: Int!
+  p90: Int!
+  p95: Int!
+  p99: Int!
+}
+
+type EnableExternalSchemaCompositionError implements Error {
+  """The detailed validation error messages for the input fields."""
+  inputErrors: EnableExternalSchemaCompositionInputErrors!
+  message: String!
+}
+
+input EnableExternalSchemaCompositionInput {
+  endpoint: String!
+  organizationSlug: String!
+  projectSlug: String!
+  secret: String!
+}
+
+type EnableExternalSchemaCompositionInputErrors {
+  endpoint: String
+  secret: String
+}
+
+"""@oneOf"""
+type EnableExternalSchemaCompositionResult {
+  error: EnableExternalSchemaCompositionError
+  ok: Project
+}
+
+interface Error {
+  message: String!
+}
+
+input Experimental__UpdateTargetSchemaCompositionInput {
+  nativeComposition: Boolean!
+  organizationSlug: String!
+  projectSlug: String!
+  targetSlug: String!
+}
+
+type ExportOrganizationAuditLogError implements Error {
+  message: String!
+}
+
+input ExportOrganizationAuditLogInput {
+  filter: AuditLogFilter!
+  selector: OrganizationSelectorInput!
+}
+
+type ExportOrganizationAuditLogPayload {
+  url: String!
+}
+
+type ExportOrganizationAuditLogResult {
+  error: ExportOrganizationAuditLogError
+  ok: ExportOrganizationAuditLogPayload
+}
+
+type ExternalSchemaComposition {
+  endpoint: String!
+}
+
+"""A failed schema check."""
+type FailedSchemaCheck implements SchemaCheck {
+  breakingSchemaChanges: SchemaChangeConnection
+  """Whether this schema check can be approved manually."""
+  canBeApproved: Boolean!
+  """Whether this schema check can be approved by the viewer."""
+  canBeApprovedByViewer: Boolean!
+  compositeSchemaSDL: String
+  compositionErrors: SchemaErrorConnection
+  """Conditional breaking change metadata."""
+  conditionalBreakingChangeMetadata: SchemaCheckConditionalBreakingChangeMetadata
+  """Optional context ID to group schema checks together."""
+  contextId: String
+  """Results of the contracts"""
+  contractChecks: ContractCheckConnection
+  createdAt: String!
+  """The GitHub repository associated with the schema check."""
+  githubRepository: String
+  """Whether this schema check has any schema changes."""
+  hasSchemaChanges: Boolean!
+  """Whether this schema check has any composition errors."""
+  hasSchemaCompositionErrors: Boolean!
+  """Whether this schema check has any breaking changes."""
+  hasUnapprovedBreakingChanges: Boolean!
+  id: ID!
+  """Meta information about the schema check."""
+  meta: SchemaCheckMeta
+  """The previous schema SDL. For composite schemas this is the service."""
+  previousSchemaSDL: String
+  safeSchemaChanges: SchemaChangeConnection
+  schemaPolicyErrors: SchemaPolicyWarningConnection
+  schemaPolicyWarnings: SchemaPolicyWarningConnection
+  """The SDL of the schema that was checked."""
+  schemaSDL: String!
+  """
+  The schema version against this check was performed.
+  Is null if there is no schema version published yet.
+  """
+  schemaVersion: SchemaVersion
+  """
+  The name of the service that owns the schema. Is null for non composite project types.
+  """
+  serviceName: String
+  supergraphSDL: String
+  """The URL of the schema check on the Hive Web App."""
+  webUrl: String
+}
+
+type FailuresOverTime {
+  date: DateTime!
+  value: SafeInt!
+}
+
+input FieldListStatsInput {
+  fields: [FieldTypePairInput!]!
+  operationHash: String
+  organizationSlug: String!
+  period: DateRangeInput!
+  projectSlug: String!
+  targetSlug: String!
+}
+
+input FieldStatsInput {
+  argument: String
+  field: String!
+  operationHash: String
+  organizationSlug: String!
+  period: DateRangeInput!
+  projectSlug: String!
+  targetSlug: String!
+  type: String!
+}
+
+type FieldStatsValues {
+  argument: String
+  count: SafeInt!
+  field: String!
+  percentage: Float!
+  type: String!
+}
+
+input FieldTypePairInput {
+  argument: String
+  field: String!
+  type: String!
+}
+
+type GitHubIntegration {
+  repositories: [GitHubRepository!]!
+}
+
+type GitHubRepository {
+  nameWithOwner: String!
+}
+
+type GitHubSchemaCheckError {
+  message: String!
+}
+
+input GitHubSchemaCheckInput {
+  commit: String!
+  """The pull request number of the schema check."""
+  pullRequestNumber: String
+  """The repository name of the schema check."""
+  repository: String
+}
+
+type GitHubSchemaCheckSuccess {
+  message: String!
+}
+
+type GitHubSchemaPublishError {
+  message: String!
+}
+
+type GitHubSchemaPublishSuccess {
+  message: String!
+}
+
+type GraphQLArgument {
+  defaultValue: String
+  deprecationReason: String
+  description: String
+  isDeprecated: Boolean!
+  name: String!
+  type: String!
+  usage: SchemaCoordinateUsage!
+}
+
+type GraphQLDocument {
+  body: String!
+  hash: String!
+  """The internal hash as used for insights."""
+  insightsHash: String!
+  operationName: String
+}
+
+type GraphQLDocumentConnection {
+  edges: [GraphQLDocumentEdge!]!
+  pageInfo: PageInfo!
+}
+
+type GraphQLDocumentEdge {
+  cursor: String!
+  node: GraphQLDocument!
+}
+
+type GraphQLEnumType {
+  deprecationReason: String
+  description: String
+  name: String!
+  """
+  Metadata specific to Apollo Federation Projects.
+  Is null if no meta information is available.
+  """
+  supergraphMetadata: SupergraphMetadata
+  usage: SchemaCoordinateUsage!
+  values: [GraphQLEnumValue!]!
+}
+
+type GraphQLEnumValue {
+  deprecationReason: String
+  description: String
+  isDeprecated: Boolean!
+  name: String!
+  """
+  Metadata specific to Apollo Federation Projects.
+  Is null if no meta information is available.
+  """
+  supergraphMetadata: SupergraphMetadata
+  usage: SchemaCoordinateUsage!
+}
+
+type GraphQLField {
+  args: [GraphQLArgument!]!
+  deprecationReason: String
+  description: String
+  isDeprecated: Boolean!
+  name: String!
+  """
+  Metadata specific to Apollo Federation Projects.
+  Is null if no meta information is available.
+  """
+  supergraphMetadata: SupergraphMetadata
+  type: String!
+  usage: SchemaCoordinateUsage!
+}
+
+type GraphQLInputField {
+  defaultValue: String
+  deprecationReason: String
+  description: String
+  isDeprecated: Boolean!
+  name: String!
+  """
+  Metadata specific to Apollo Federation Projects.
+  Is null if no meta information is available (e.g. this is not an apollo federation project).
+  """
+  supergraphMetadata: SupergraphMetadata
+  type: String!
+  usage: SchemaCoordinateUsage!
+}
+
+type GraphQLInputObjectType {
+  description: String
+  fields: [GraphQLInputField!]!
+  name: String!
+  """
+  Metadata specific to Apollo Federation Projects.
+  Is null if no meta information is available (e.g. this is not an apollo federation project).
+  """
+  supergraphMetadata: SupergraphMetadata
+  usage: SchemaCoordinateUsage!
+}
+
+type GraphQLInterfaceType {
+  description: String
+  fields: [GraphQLField!]!
+  interfaces: [String!]!
+  name: String!
+  """
+  Metadata specific to Apollo Federation Projects.
+  Is null if no meta information is available.
+  """
+  supergraphMetadata: SupergraphMetadata
+  usage: SchemaCoordinateUsage!
+}
+
+union GraphQLNamedType = GraphQLEnumType | GraphQLInputObjectType | GraphQLInterfaceType | GraphQLObjectType | GraphQLScalarType | GraphQLUnionType
+
+type GraphQLObjectType {
+  description: String
+  fields: [GraphQLField!]!
+  interfaces: [String!]!
+  name: String!
+  """
+  Metadata specific to Apollo Federation Projects.
+  Is null if no meta information is available (e.g. this is not an apollo federation project).
+  """
+  supergraphMetadata: SupergraphMetadata
+  usage: SchemaCoordinateUsage!
+}
+
+enum GraphQLOperationType {
+  mutation
+  query
+  subscription
+}
+
+type GraphQLScalarType {
+  description: String
+  name: String!
+  """
+  Metadata specific to Apollo Federation Projects.
+  Is null if no meta information is available (e.g. this is not an apollo federation project).
+  """
+  supergraphMetadata: SupergraphMetadata
+  usage: SchemaCoordinateUsage!
+}
+
+type GraphQLUnionType {
+  description: String
+  members: [GraphQLUnionTypeMember!]!
+  name: String!
+  """
+  Metadata specific to Apollo Federation Projects.
+  Is null if no meta information is available (e.g. this is not an apollo federation project).
+  """
+  supergraphMetadata: SupergraphMetadata
+  usage: SchemaCoordinateUsage!
+}
+
+type GraphQLUnionTypeMember {
+  name: String!
+  """
+  Metadata specific to Apollo Federation Projects.
+  Is null if no meta information is available (e.g. this is not an apollo federation project).
+  """
+  supergraphMetadata: SupergraphMetadata
+  usage: SchemaCoordinateUsage!
+}
+
+type InviteToOrganizationByEmailError implements Error {
+  """The detailed validation error messages for the input fields."""
+  inputErrors: InviteToOrganizationByEmailInputErrors!
+  message: String!
+}
+
+input InviteToOrganizationByEmailInput {
+  email: String!
+  organizationSlug: String!
+  roleId: ID
+}
+
+type InviteToOrganizationByEmailInputErrors {
+  email: String
+}
+
+"""@oneOf"""
+type InviteToOrganizationByEmailResult {
+  error: InviteToOrganizationByEmailError
+  ok: OrganizationInvitation
+}
+
+scalar JSON
+
+scalar JSONSchemaObject
+
+union JoinOrganizationPayload = OrganizationInvitationError | OrganizationPayload
+
+type Lab {
+  mocks: JSON
+  schema: String!
+}
+
+type LeaveOrganizationError implements Error {
+  message: String!
+}
+
+type LeaveOrganizationOk {
+  organizationId: ID!
+}
+
+"""@oneOf"""
+type LeaveOrganizationResult {
+  error: LeaveOrganizationError
+  ok: LeaveOrganizationOk
+}
+
+type Member {
+  canLeaveOrganization: Boolean!
+  id: ID!
+  isOwner: Boolean!
+  resourceAssignment: ResourceAssignment!
+  role: MemberRole!
+  user: User!
+  """Whether the viewer can remove this member from the organization."""
+  viewerCanRemove: Boolean!
+}
+
+type MemberConnection {
+  nodes: [Member!]!
+  total: Int!
+}
+
+type MemberRole {
+  """Whether the role can be deleted (based on current user's permissions)"""
+  canDelete: Boolean!
+  """
+  Whether the role can be used to invite new members (based on current user's permissions)
+  """
+  canInvite: Boolean!
+  """Whether the role can be updated (based on current user's permissions)"""
+  canUpdate: Boolean!
+  description: String!
+  id: ID!
+  """
+  Whether the role is a built-in role. Built-in roles cannot be deleted or modified.
+  """
+  locked: Boolean!
+  """Amount of users within the organization that have this role assigned."""
+  membersCount: Int!
+  name: String!
+  """List of permissions attached to this member role."""
+  permissions: [String!]!
+}
+
+type ModifyDocumentCollectionError implements Error {
+  message: String!
+}
+
+type ModifyDocumentCollectionOkPayload {
+  collection: DocumentCollection!
+  updatedTarget: Target!
+}
+
+type ModifyDocumentCollectionOperationOkPayload {
+  collection: DocumentCollection!
+  operation: DocumentCollectionOperation!
+  updatedTarget: Target!
+}
+
+"""@oneOf"""
+type ModifyDocumentCollectionOperationResult {
+  error: ModifyDocumentCollectionError
+  ok: ModifyDocumentCollectionOperationOkPayload
+}
+
+"""@oneOf"""
+type ModifyDocumentCollectionResult {
+  error: ModifyDocumentCollectionError
+  ok: ModifyDocumentCollectionOkPayload
+}
+
+type MonthlyUsage {
+  """Start of the month in 1992-10-21 format"""
+  date: Date!
+  total: SafeInt!
+}
+
+type Mutation {
+  activateAppDeployment(input: ActivateAppDeploymentInput!): ActivateAppDeploymentResult!
+  addAlert(input: AddAlertInput!): AddAlertResult!
+  addAlertChannel(input: AddAlertChannelInput!): AddAlertChannelResult!
+  addDocumentsToAppDeployment(input: AddDocumentsToAppDeploymentInput!): AddDocumentsToAppDeploymentResult!
+  addGitHubIntegration(input: AddGitHubIntegrationInput!): Boolean!
+  addSlackIntegration(input: AddSlackIntegrationInput!): Boolean!
+  answerOrganizationTransferRequest(input: AnswerOrganizationTransferRequestInput!): AnswerOrganizationTransferRequestResult!
+  """Approve a failed schema check with breaking changes."""
+  approveFailedSchemaCheck(input: ApproveFailedSchemaCheckInput!): ApproveFailedSchemaCheckResult!
+  assignMemberRole(input: AssignMemberRoleInput!): AssignMemberRoleResult!
+  createAppDeployment(input: CreateAppDeploymentInput!): CreateAppDeploymentResult!
+  createCdnAccessToken(input: CreateCdnAccessTokenInput!): CdnAccessTokenCreateResult!
+  """Create a contract for a given target."""
+  createContract(input: CreateContractInput!): CreateContractResult!
+  createDocumentCollection(input: CreateDocumentCollectionInput!, selector: TargetSelectorInput!): ModifyDocumentCollectionResult!
+  createMemberRole(input: CreateMemberRoleInput!): CreateMemberRoleResult!
+  createOIDCIntegration(input: CreateOIDCIntegrationInput!): CreateOIDCIntegrationResult!
+  createOperationInDocumentCollection(input: CreateDocumentCollectionOperationInput!, selector: TargetSelectorInput!): ModifyDocumentCollectionOperationResult!
+  createOrganization(input: CreateOrganizationInput!): CreateOrganizationResult!
+  createProject(input: CreateProjectInput!): CreateProjectResult!
+  createTarget(input: CreateTargetInput!): CreateTargetResult!
+  createToken(input: CreateTokenInput!): CreateTokenResult!
+  deleteAlertChannels(input: DeleteAlertChannelsInput!): DeleteAlertChannelsResult!
+  deleteAlerts(input: DeleteAlertsInput!): DeleteAlertsResult!
+  deleteCdnAccessToken(input: DeleteCdnAccessTokenInput!): DeleteCdnAccessTokenResult!
+  deleteDocumentCollection(id: ID!, selector: TargetSelectorInput!): DeleteDocumentCollectionResult!
+  deleteGitHubIntegration(input: OrganizationSelectorInput!): DeleteGitHubIntegrationResult!
+  deleteMemberRole(input: DeleteMemberRoleInput!): DeleteMemberRoleResult!
+  deleteOIDCIntegration(input: DeleteOIDCIntegrationInput!): DeleteOIDCIntegrationResult!
+  deleteOperationInDocumentCollection(id: ID!, selector: TargetSelectorInput!): DeleteDocumentCollectionOperationResult!
+  deleteOrganization(selector: OrganizationSelectorInput!): OrganizationPayload!
+  deleteOrganizationInvitation(input: DeleteOrganizationInvitationInput!): DeleteOrganizationInvitationResult!
+  deleteOrganizationMember(input: OrganizationMemberInput!): OrganizationPayload!
+  deleteProject(selector: ProjectSelectorInput!): DeleteProjectPayload!
+  deleteSlackIntegration(input: OrganizationSelectorInput!): DeleteSlackIntegrationResult!
+  deleteTarget(selector: TargetSelectorInput!): DeleteTargetPayload!
+  deleteTokens(input: DeleteTokensInput!): DeleteTokensPayload!
+  """Disable a contract."""
+  disableContract(input: DisableContractInput!): DisableContractResult!
+  disableExternalSchemaComposition(input: DisableExternalSchemaCompositionInput!): DisableExternalSchemaCompositionResult!
+  downgradeToHobby(input: DowngradeToHobbyInput!): ChangePlanResult!
+  enableExternalSchemaComposition(input: EnableExternalSchemaCompositionInput!): EnableExternalSchemaCompositionResult!
+  enableProjectNameInGithubCheck(input: ProjectSelectorInput!): Project!
+  """
+  Overwrites project's schema composition library.
+  Works only for Federation projects with native composition enabled.
+  This mutation is temporary and will be removed once no longer needed.
+  It's part of a feature flag called "forceLegacyCompositionInTargets".
+  """
+  experimental__updateTargetSchemaComposition(input: Experimental__UpdateTargetSchemaCompositionInput!): Target!
+  exportOrganizationAuditLog(input: ExportOrganizationAuditLogInput!): ExportOrganizationAuditLogResult!
+  generateStripePortalLink(selector: OrganizationSelectorInput!): String!
+  inviteToOrganizationByEmail(input: InviteToOrganizationByEmailInput!): InviteToOrganizationByEmailResult!
+  joinOrganization(code: String!): JoinOrganizationPayload!
+  leaveOrganization(input: OrganizationSelectorInput!): LeaveOrganizationResult!
+  noop(noop: String): Boolean
+  requestOrganizationTransfer(input: RequestOrganizationTransferInput!): RequestOrganizationTransferResult!
+  retireAppDeployment(input: RetireAppDeploymentInput!): RetireAppDeploymentResult!
+  schemaCheck(input: SchemaCheckInput!): SchemaCheckPayload!
+  schemaCompose(input: SchemaComposeInput!): SchemaComposePayload!
+  schemaDelete(input: SchemaDeleteInput!): SchemaDeleteResult!
+  schemaPublish(input: SchemaPublishInput!): SchemaPublishPayload!
+  setTargetValidation(input: SetTargetValidationInput!): Target!
+  supportTicketCreate(input: SupportTicketCreateInput!): SupportTicketCreateResult!
+  supportTicketReply(input: SupportTicketReplyInput!): SupportTicketReplyResult!
+  updateBaseSchema(input: UpdateBaseSchemaInput!): UpdateBaseSchemaResult!
+  updateDocumentCollection(input: UpdateDocumentCollectionInput!, selector: TargetSelectorInput!): ModifyDocumentCollectionResult!
+  updateMe(input: UpdateMeInput!): UpdateMeResult!
+  updateMemberRole(input: UpdateMemberRoleInput!): UpdateMemberRoleResult!
+  updateNativeFederation(input: UpdateNativeFederationInput!): UpdateNativeFederationResult!
+  updateOIDCDefaultMemberRole(input: UpdateOIDCDefaultMemberRoleInput!): UpdateOIDCDefaultMemberRoleResult!
+  updateOIDCIntegration(input: UpdateOIDCIntegrationInput!): UpdateOIDCIntegrationResult!
+  updateOIDCRestrictions(input: UpdateOIDCRestrictionsInput!): UpdateOIDCRestrictionsResult!
+  updateOperationInDocumentCollection(input: UpdateDocumentCollectionOperationInput!, selector: TargetSelectorInput!): ModifyDocumentCollectionOperationResult!
+  updateOrgRateLimit(monthlyLimits: RateLimitInput!, selector: OrganizationSelectorInput!): Organization!
+  updateOrganizationSlug(input: UpdateOrganizationSlugInput!): UpdateOrganizationSlugResult!
+  updatePreflightScript(input: UpdatePreflightScriptInput!): PreflightScriptResult!
+  updateProjectSlug(input: UpdateProjectSlugInput!): UpdateProjectSlugResult!
+  updateSchemaPolicyForOrganization(allowOverrides: Boolean!, policy: SchemaPolicyInput!, selector: OrganizationSelectorInput!): UpdateSchemaPolicyResult!
+  updateSchemaPolicyForProject(policy: SchemaPolicyInput!, selector: ProjectSelectorInput!): UpdateSchemaPolicyResult!
+  """Updates the target's explorer endpoint url."""
+  updateTargetGraphQLEndpointUrl(input: UpdateTargetGraphQLEndpointUrlInput!): UpdateTargetGraphQLEndpointUrlResult!
+  updateTargetSlug(input: UpdateTargetSlugInput!): UpdateTargetSlugResult!
+  updateTargetValidationSettings(input: UpdateTargetValidationSettingsInput!): UpdateTargetValidationSettingsResult!
+  upgradeToPro(input: UpgradeToProInput!): ChangePlanResult!
+}
+
+enum NativeFederationCompatibilityStatus {
+  COMPATIBLE
+  INCOMPATIBLE
+  NOT_APPLICABLE
+  UNKNOWN
+}
+
+type OIDCIntegration {
+  authorizationEndpoint: String!
+  clientId: ID!
+  clientSecretPreview: String!
+  defaultMemberRole: MemberRole!
+  id: ID!
+  oidcUserAccessOnly: Boolean!
+  organization: Organization!
+  tokenEndpoint: String!
+  userinfoEndpoint: String!
+}
+
+type OIDCIntegrationLogEvent {
+  message: String!
+  timestamp: DateTime!
+}
+
+input OIDCIntegrationLogSubscriptionInput {
+  oidcIntegrationId: ID!
+}
+
+type Operation {
+  body: String!
+  hash: String!
+  name: String
+  type: GraphQLOperationType!
+}
+
+type OperationStatsValues {
+  """Total number of requests"""
+  count: SafeInt!
+  """Number of requests that succeeded"""
+  countOk: SafeInt!
+  duration: DurationValues!
+  id: ID!
+  kind: String!
+  name: String!
+  operationHash: String
+  percentage: Float!
+}
+
+type OperationStatsValuesConnection {
+  nodes: [OperationStatsValues!]!
+  total: Int!
+}
+
+type OperationsStats {
+  clients: ClientStatsValuesConnection!
+  duration: DurationValues!
+  durationOverTime(resolution: Int!): [DurationOverTime!]!
+  failuresOverTime(resolution: Int!): [FailuresOverTime!]!
+  operations: OperationStatsValuesConnection!
+  requestsOverTime(resolution: Int!): [RequestsOverTime!]!
+  totalFailures: SafeInt!
+  totalOperations: Int!
+  totalRequests: SafeInt!
+}
+
+input OperationsStatsSelectorInput {
+  clientNames: [String!]
+  operations: [ID!]
+  organizationSlug: String!
+  period: DateRangeInput!
+  projectSlug: String!
+  targetSlug: String!
+}
+
+type Organization {
+  """List of available permission groups that can be assigned to users."""
+  availableMemberPermissionGroups: [PermissionGroup!]!
+  billingConfiguration: BillingConfiguration!
+  cleanId: ID! @deprecated(reason: "Use the 'slug' field instead.")
+  getStarted: OrganizationGetStarted!
+  gitHubIntegration: GitHubIntegration
+  hasGitHubIntegration: Boolean!
+  hasSlackIntegration: Boolean!
+  id: ID!
+  invitations: OrganizationInvitationConnection
+  isAppDeploymentsEnabled: Boolean!
+  me: Member!
+  memberRoles: [MemberRole!]
+  members: MemberConnection
+  name: String! @deprecated(reason: "Use the 'slug' field instead.")
+  oidcIntegration: OIDCIntegration
+  owner: Member!
+  plan: BillingPlanType!
+  projectBySlug(projectSlug: String!): Project
+  projects: ProjectConnection!
+  rateLimit: RateLimit!
+  schemaPolicy: SchemaPolicy
+  slug: String!
+  supportTicket(id: ID!): SupportTicket
+  supportTickets(after: String, first: Int): SupportTicketConnection
+  """
+  Whether the viewer should be able to access the settings page within the app
+  """
+  viewerCanAccessSettings: Boolean!
+  """Whether the viewer can assign roles to users"""
+  viewerCanAssignUserRoles: Boolean!
+  viewerCanCreateProject: Boolean!
+  """Whether the viewer can delete the organization"""
+  viewerCanDelete: Boolean!
+  viewerCanDescribeBilling: Boolean!
+  """
+  The organization's audit logs. This field is only available to members with the Admin role.
+  """
+  viewerCanExportAuditLogs: Boolean!
+  """Whether the viewer can manage member invites"""
+  viewerCanManageInvitations: Boolean!
+  viewerCanManageOIDCIntegration: Boolean!
+  """Whether the viewer can modify roles of members within the organization"""
+  viewerCanManageRoles: Boolean!
+  viewerCanManageSupportTickets: Boolean!
+  viewerCanModifyBilling: Boolean!
+  viewerCanModifyGitHubIntegration: Boolean!
+  """
+  Whether the viewer can view and modify the schema policy for this organization
+  """
+  viewerCanModifySchemaPolicy: Boolean!
+  viewerCanModifySlackIntegration: Boolean!
+  """Whether the viewer can modify the organization slug"""
+  viewerCanModifySlug: Boolean!
+  """Whether the viewer can see the members within the organization"""
+  viewerCanSeeMembers: Boolean!
+  """Whether the viewer can transfer ownership of the organization"""
+  viewerCanTransferOwnership: Boolean!
+}
+
+enum OrganizationAccessScope {
+  DELETE
+  INTEGRATIONS
+  MEMBERS
+  READ
+  SETTINGS
+}
+
+union OrganizationByInviteCodePayload = OrganizationInvitationError | OrganizationInvitationPayload
+
+type OrganizationConnection {
+  nodes: [Organization!]!
+  total: Int!
+}
+
+type OrganizationGetStarted {
+  checkingSchema: Boolean!
+  creatingProject: Boolean!
+  enablingUsageBasedBreakingChanges: Boolean!
+  invitingMembers: Boolean!
+  publishingSchema: Boolean!
+  reportingOperations: Boolean!
+}
+
+type OrganizationInvitation {
+  code: String!
+  createdAt: DateTime!
+  email: String!
+  expiresAt: DateTime!
+  id: ID!
+  role: MemberRole!
+}
+
+type OrganizationInvitationConnection {
+  nodes: [OrganizationInvitation!]!
+  total: Int!
+}
+
+type OrganizationInvitationError {
+  message: String!
+}
+
+type OrganizationInvitationPayload {
+  name: String!
+}
+
+input OrganizationMemberInput {
+  organizationSlug: String!
+  userId: ID!
+}
+
+type OrganizationPayload {
+  organization: Organization!
+  selector: OrganizationSelector!
+}
+
+type OrganizationSelector {
+  organizationSlug: String!
+}
+
+input OrganizationSelectorInput {
+  organizationSlug: String!
+}
+
+type OrganizationTransfer {
+  organization: Organization!
+}
+
+input OrganizationTransferRequestSelector {
+  code: String!
+  organizationSlug: String!
+}
+
+type PageInfo {
+  endCursor: String!
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String!
+}
+
+type Permission {
+  dependsOnId: ID
+  description: String!
+  id: ID!
+  isReadOnly: Boolean!
+  level: PermissionLevel!
+  title: String!
+  warning: String
+}
+
+type PermissionGroup {
+  id: ID!
+  permissions: [Permission!]!
+  title: String!
+}
+
+enum PermissionLevel {
+  appDeployment
+  organization
+  project
+  service
+  target
+}
+
+type PreflightScript {
+  createdAt: DateTime!
+  id: ID!
+  sourceCode: String!
+  updatedAt: DateTime!
+}
+
+type PreflightScriptError implements Error {
+  message: String!
+}
+
+type PreflightScriptOk {
+  preflightScript: PreflightScript!
+  updatedTarget: Target!
+}
+
+"""@oneOf"""
+type PreflightScriptResult {
+  error: PreflightScriptError
+  ok: PreflightScriptOk
+}
+
+type Project {
+  alertChannels: [AlertChannel!]
+  alerts: [Alert!]
+  buildUrl: String
+  cleanId: ID! @deprecated(reason: "Use the 'slug' field instead.")
+  experimental_nativeCompositionPerTarget: Boolean!
+  externalSchemaComposition: ExternalSchemaComposition
+  id: ID!
+  isNativeFederationEnabled: Boolean!
+  isProjectNameInGitHubCheckEnabled: Boolean!
+  name: String! @deprecated(reason: "Use the 'slug' field instead.")
+  nativeFederationCompatibility: NativeFederationCompatibilityStatus!
+  parentSchemaPolicy: SchemaPolicy
+  requestsOverTime(period: DateRangeInput!, resolution: Int!): [RequestsOverTime!]!
+  schemaPolicy: SchemaPolicy
+  schemaVersionsCount(period: DateRangeInput): Int!
+  slug: String!
+  targetBySlug(targetSlug: String!): Target
+  targets: TargetConnection!
+  totalRequests(period: DateRangeInput!): SafeInt!
+  type: ProjectType!
+  validationUrl: String
+  """Whether the viewer can create a new target within this project."""
+  viewerCanCreateTarget: Boolean!
+  """Whether the viewer can delete this project."""
+  viewerCanDelete: Boolean!
+  """Whether the viewer can view and modify alerts with this project."""
+  viewerCanModifyAlerts: Boolean!
+  """
+  Whether the viewer can view and modify the schema policy for this organization
+  """
+  viewerCanModifySchemaPolicy: Boolean!
+  """
+  Whether the viewer can access the settings page and modify settings of this project.
+  """
+  viewerCanModifySettings: Boolean!
+}
+
+enum ProjectAccessScope {
+  ALERTS
+  DELETE
+  OPERATIONS_STORE_READ
+  OPERATIONS_STORE_WRITE
+  READ
+  SETTINGS
+}
+
+type ProjectConnection {
+  nodes: [Project!]!
+  total: Int!
+}
+
+type ProjectResourceAssignment {
+  project: Project!
+  projectId: ID!
+  targets: ProjectTargetsResourceAssignment!
+}
+
+input ProjectResourceAssignmentInput {
+  projectId: ID!
+  targets: ProjectTargetsResourceAssignmentInput!
+}
+
+type ProjectSelector {
+  organizationSlug: String!
+  projectSlug: String!
+}
+
+input ProjectSelectorInput {
+  organizationSlug: String!
+  projectSlug: String!
+}
+
+type ProjectTargetsResourceAssignment {
+  mode: ResourceAssignmentMode!
+  targets: [TargetResouceAssignment!]
+}
+
+input ProjectTargetsResourceAssignmentInput {
+  """
+  Whether the permissions should apply for all targets within the project or only selected ones.
+  """
+  mode: ResourceAssignmentMode!
+  """
+  Specific targets within the projects for which the permissions should be applied.
+  """
+  targets: [TargetResourceAssignmentInput!]
+}
+
+enum ProjectType {
+  FEDERATION
+  SINGLE
+  STITCHING
+}
+
+type PushedSchemaLog {
+  author: String!
+  commit: ID!
+  date: DateTime!
+  id: ID!
+  """
+  The previous SDL of the pushed schema. Is null for single schema projects.
+  """
+  previousServiceSdl: String
+  service: String
+  """
+  The serviceSDL of the pushed schema. Is null for single schema projects.
+  """
+  serviceSdl: String
+}
+
+type Query {
+  admin: AdminQuery!
+  billingPlans: [BillingPlan!]!
+  clientStats(selector: ClientStatsInput!): ClientStats!
+  clientStatsByTargets(selector: ClientStatsByTargetsInput!): ClientStatsValuesConnection!
+  fieldListStats(selector: FieldListStatsInput!): [FieldStatsValues!]!
+  fieldStats(selector: FieldStatsInput!): FieldStatsValues!
+  hasCollectedOperations(selector: TargetSelectorInput!): Boolean!
+  """Whether the CDN integration in Hive is enabled."""
+  isCDNEnabled: Boolean!
+  isGitHubIntegrationFeatureEnabled: Boolean!
+  lab(selector: TargetSelectorInput!): Lab
+  latestValidVersion(target: TargetReferenceInput): SchemaVersion
+  """Requires API Token"""
+  latestVersion: SchemaVersion
+  me: User!
+  monthlyUsage(selector: OrganizationSelectorInput!): [MonthlyUsage!]!
+  myDefaultOrganization(previouslyVisitedOrganizationId: ID): OrganizationPayload
+  noop: Boolean
+  operationsStats(selector: OperationsStatsSelectorInput!): OperationsStats!
+  organization(selector: OrganizationSelectorInput!): OrganizationPayload
+  organizationByGitHubInstallationId(installation: ID!): Organization
+  organizationByInviteCode(code: String!): OrganizationByInviteCodePayload
+  organizationBySlug(organizationSlug: String!): Organization
+  organizationTransferRequest(selector: OrganizationTransferRequestSelector!): OrganizationTransfer
+  organizations: OrganizationConnection!
+  project(selector: ProjectSelectorInput!): Project
+  projects(selector: OrganizationSelectorInput!): ProjectConnection!
+  schemaCoordinateStats(selector: SchemaCoordinateStatsInput!): SchemaCoordinateStats!
+  schemaPolicyRules: [SchemaPolicyRule!]!
+  schemaVersionForActionId(actionId: ID!, target: TargetReferenceInput): SchemaVersion
+  target(selector: TargetSelectorInput!): Target
+  targets(selector: ProjectSelectorInput!): TargetConnection!
+  testExternalSchemaComposition(selector: TestExternalSchemaCompositionInput!): TestExternalSchemaCompositionResult!
+  tokenInfo: TokenInfoPayload!
+  tokens(selector: TargetSelectorInput!): TokenConnection!
+  usageEstimation(input: UsageEstimationInput!): UsageEstimation!
+}
+
+type RateLimit {
+  limitedForOperations: Boolean!
+  operations: SafeInt!
+  retentionInDays: Int!
+}
+
+input RateLimitInput {
+  operations: SafeInt!
+}
+
+union RegistryLog = DeletedSchemaLog | PushedSchemaLog
+
+type RequestOrganizationTransferError implements Error {
+  message: String!
+}
+
+input RequestOrganizationTransferInput {
+  organizationSlug: String!
+  userId: ID!
+}
+
+type RequestOrganizationTransferOk {
+  code: String!
+  email: String!
+}
+
+"""@oneOf"""
+type RequestOrganizationTransferResult {
+  error: RequestOrganizationTransferError
+  ok: RequestOrganizationTransferOk
+}
+
+type RequestsOverTime {
+  date: DateTime!
+  value: SafeInt!
+}
+
+type ResourceAssignment {
+  mode: ResourceAssignmentMode!
+  projects: [ProjectResourceAssignment!]
+}
+
+input ResourceAssignmentInput {
+  """
+  Whether the permissions should apply for all projects within the organization or only selected ones.
+  """
+  mode: ResourceAssignmentMode!
+  """
+  Specific projects within the organization for which the permissions should be applied.
+  """
+  projects: [ProjectResourceAssignmentInput!]
+}
+
+enum ResourceAssignmentMode {
+  all
+  granular
+}
+
+type RetireAppDeploymentError implements Error {
+  message: String!
+}
+
+input RetireAppDeploymentInput {
+  appName: String!
+  appVersion: String!
+  targetId: ID!
+}
+
+type RetireAppDeploymentOk {
+  retiredAppDeployment: AppDeployment!
+}
+
+type RetireAppDeploymentResult {
+  error: RetireAppDeploymentError
+  ok: RetireAppDeploymentOk
+}
+
+enum RuleInstanceSeverityLevel {
+  ERROR
+  OFF
+  WARNING
+}
+
+scalar SafeInt
+
+union Schema = CompositeSchema | SingleSchema
+
+type SchemaChange {
+  """
+  Approval metadata for this schema change.
+  This field is populated in case the breaking change was manually approved.
+  """
+  approval: SchemaChangeApproval
+  criticality: CriticalityLevel!
+  criticalityReason: String
+  """Whether the breaking change is safe based on usage data."""
+  isSafeBasedOnUsage: Boolean!
+  message(
+    """
+    Whether to include a note about the safety of the change based on usage data within the message.
+    """
+    withSafeBasedOnUsageNote: Boolean = true
+  ): String!
+  path: [String!]
+  """
+  Usage statistics about the schema change if it is not safe based on usage.
+  The statistics are determined based on the breaking change configuration.
+  The usage statistics are only available for breaking changes and only represent a snapshot of the usage data at the time of the schema check/schema publish.
+  """
+  usageStatistics: SchemaChangeUsageStatistics
+}
+
+type SchemaChangeApproval {
+  """Date of the schema change approval."""
+  approvedAt: DateTime!
+  """User that approved this schema change."""
+  approvedBy: User
+  """ID of the schema check in which this change was first approved."""
+  schemaCheckId: ID!
+}
+
+type SchemaChangeConnection {
+  nodes: [SchemaChange!]!
+  total: Int!
+}
+
+type SchemaChangeUsageStatistics {
+  """List of top clients that are affected by this schema change."""
+  topAffectedClients: [SchemaChangeUsageStatisticsAffectedClient!]!
+  """List of the top operations that are affected by this schema change."""
+  topAffectedOperations: [SchemaChangeUsageStatisticsAffectedOperation!]!
+}
+
+type SchemaChangeUsageStatisticsAffectedClient {
+  """The number of times the client called the operation in the period."""
+  count: Float!
+  """Human readable count value."""
+  countFormatted: String!
+  """Name of the client."""
+  name: String!
+  """The percentage share of the client of the total traffic."""
+  percentage: Float!
+  """Human readable percentage value."""
+  percentageFormatted: String!
+}
+
+type SchemaChangeUsageStatisticsAffectedOperation {
+  """The number of times the operation was called in the period."""
+  count: Float!
+  """Human readable count value."""
+  countFormatted: String!
+  """Hash of the operation."""
+  hash: String!
+  """Name of the operation."""
+  name: String!
+  """The percentage share of the operation of the total traffic."""
+  percentage: Float!
+  """Human readable percentage value."""
+  percentageFormatted: String!
+}
+
+interface SchemaCheck {
+  breakingSchemaChanges: SchemaChangeConnection
+  """Conditional breaking change metadata."""
+  conditionalBreakingChangeMetadata: SchemaCheckConditionalBreakingChangeMetadata
+  """Optional context ID to group schema checks together."""
+  contextId: String
+  """Results of the contracts"""
+  contractChecks: ContractCheckConnection
+  createdAt: String!
+  """The GitHub repository associated with the schema check."""
+  githubRepository: String
+  """Whether this schema check has any schema changes."""
+  hasSchemaChanges: Boolean!
+  """Whether this schema check has any composition errors."""
+  hasSchemaCompositionErrors: Boolean!
+  """Whether this schema check has any breaking changes."""
+  hasUnapprovedBreakingChanges: Boolean!
+  id: ID!
+  """Meta information about the schema check."""
+  meta: SchemaCheckMeta
+  """The previous schema SDL. For composite schemas this is the service."""
+  previousSchemaSDL: String
+  safeSchemaChanges: SchemaChangeConnection
+  schemaPolicyErrors: SchemaPolicyWarningConnection
+  schemaPolicyWarnings: SchemaPolicyWarningConnection
+  """The SDL of the schema that was checked."""
+  schemaSDL: String!
+  """
+  The schema version against this check was performed.
+  Is null if there is no schema version published yet.
+  """
+  schemaVersion: SchemaVersion
+  """
+  The name of the service that owns the schema. Is null for non composite project types.
+  """
+  serviceName: String
+  """The URL of the schema check on the Hive Web App."""
+  webUrl: String
+}
+
+type SchemaCheckConditionalBreakingChangeMetadata {
+  period: DateRange!
+  settings: SchemaCheckConditionalBreakingChangeMetadataSettings!
+  usage: SchemaCheckConditionalBreakingChangeMetadataUsage!
+}
+
+type SchemaCheckConditionalBreakingChangeMetadataSettings {
+  excludedClientNames: [String!]
+  percentage: Float!
+  retentionInDays: Int!
+  targets: [BreakingChangeMetadataTarget!]!
+}
+
+type SchemaCheckConditionalBreakingChangeMetadataUsage {
+  """Total amount of requests for the settings and period."""
+  totalRequestCount: Float!
+  """Total request count human readable."""
+  totalRequestCountFormatted: String!
+}
+
+type SchemaCheckConnection {
+  edges: [SchemaCheckEdge!]!
+  pageInfo: PageInfo!
+}
+
+type SchemaCheckEdge {
+  cursor: String!
+  node: SchemaCheck!
+}
+
+type SchemaCheckError {
+  changes: SchemaChangeConnection
+  errors: SchemaErrorConnection!
+  schemaCheck: SchemaCheck
+  valid: Boolean!
+  warnings: SchemaWarningConnection
+}
+
+input SchemaCheckInput {
+  """
+  Optional context ID to group schema checks together.
+  Manually approved breaking changes will be memorized for schema checks with the same context id.
+  """
+  contextId: String
+  github: GitHubSchemaCheckInput
+  meta: SchemaCheckMetaInput
+  sdl: String!
+  service: ID
+  target: TargetReferenceInput
+}
+
+type SchemaCheckMeta {
+  author: String!
+  commit: String!
+}
+
+input SchemaCheckMetaInput {
+  author: String!
+  commit: String!
+}
+
+union SchemaCheckPayload = GitHubSchemaCheckError | GitHubSchemaCheckSuccess | SchemaCheckError | SchemaCheckSuccess
+
+type SchemaCheckSuccess {
+  changes: SchemaChangeConnection
+  initial: Boolean!
+  schemaCheck: SchemaCheck
+  valid: Boolean!
+  warnings: SchemaWarningConnection
+}
+
+type SchemaCheckWarning {
+  column: Int
+  line: Int
+  message: String!
+  source: String
+}
+
+input SchemaChecksFilter {
+  changed: Boolean
+  failed: Boolean
+}
+
+input SchemaCompareInput {
+  after: ID!
+  before: ID!
+  organizationSlug: String!
+  projectSlug: String!
+  targetSlug: String!
+}
+
+type SchemaComposeError implements Error {
+  message: String!
+}
+
+input SchemaComposeInput {
+  services: [SchemaComposeServiceInput!]!
+  target: TargetReferenceInput
+  """
+  Whether to use the latest composable version or just latest schema version for the composition.
+  Latest schema version may or may not be composable.
+  It's true by default, which means the latest composable schema version is used.
+  """
+  useLatestComposableVersion: Boolean = true
+}
+
+union SchemaComposePayload = SchemaComposeError | SchemaComposeSuccess
+
+input SchemaComposeServiceInput {
+  name: String!
+  sdl: String!
+  url: String
+}
+
+type SchemaComposeSuccess {
+  compositionResult: SchemaCompositionResult!
+  valid: Boolean!
+}
+
+"""@oneOf"""
+type SchemaCompositionResult {
+  errors: SchemaErrorConnection
+  supergraphSdl: String
+}
+
+type SchemaConnection {
+  nodes: [Schema!]!
+  total: Int!
+}
+
+type SchemaCoordinateStats {
+  clients: ClientStatsValuesConnection!
+  operations: OperationStatsValuesConnection!
+  requestsOverTime(resolution: Int!): [RequestsOverTime!]!
+  totalRequests: SafeInt!
+}
+
+input SchemaCoordinateStatsInput {
+  organizationSlug: String!
+  period: DateRangeInput!
+  projectSlug: String!
+  schemaCoordinate: String!
+  targetSlug: String!
+}
+
+type SchemaCoordinateUsage {
+  isUsed: Boolean!
+  topOperations(limit: Int!): [SchemaCoordinateUsageOperation!]!
+  total: Float!
+  """
+  A list of clients that use this schema coordinate within GraphQL operation documents.
+  Is null if used by none clients.
+  """
+  usedByClients: [String!]
+}
+
+type SchemaCoordinateUsageOperation {
+  """The number of times the operation was called."""
+  count: Float!
+  hash: String!
+  name: String!
+}
+
+type SchemaDeleteError {
+  errors: SchemaErrorConnection!
+  valid: Boolean!
+}
+
+input SchemaDeleteInput {
+  dryRun: Boolean
+  serviceName: ID!
+  target: TargetReferenceInput
+}
+
+union SchemaDeleteResult = SchemaDeleteError | SchemaDeleteSuccess
+
+type SchemaDeleteSuccess {
+  changes: SchemaChangeConnection
+  errors: SchemaErrorConnection!
+  valid: Boolean!
+}
+
+type SchemaError {
+  message: String!
+  path: [String!]
+}
+
+type SchemaErrorConnection {
+  nodes: [SchemaError!]!
+  total: Int!
+}
+
+type SchemaExplorer {
+  mutation: GraphQLObjectType
+  query: GraphQLObjectType
+  subscription: GraphQLObjectType
+  type(name: String!): GraphQLNamedType
+  types: [GraphQLNamedType!]!
+}
+
+input SchemaExplorerUsageInput {
+  period: DateRangeInput!
+}
+
+type SchemaPolicy {
+  allowOverrides: Boolean!
+  id: ID!
+  rules: [SchemaPolicyRuleInstance!]!
+  updatedAt: DateTime!
+}
+
+input SchemaPolicyInput {
+  rules: [SchemaPolicyRuleInstanceInput!]!
+}
+
+enum SchemaPolicyLevel {
+  ORGANIZATION
+  PROJECT
+}
+
+type SchemaPolicyRule {
+  configJsonSchema: JSONSchemaObject
+  description: String!
+  documentationUrl: String
+  id: ID!
+  recommended: Boolean!
+}
+
+type SchemaPolicyRuleInstance {
+  configuration: JSON
+  rule: SchemaPolicyRule!
+  severity: RuleInstanceSeverityLevel!
+}
+
+input SchemaPolicyRuleInstanceInput {
+  configuration: JSON
+  ruleId: String!
+  severity: RuleInstanceSeverityLevel!
+}
+
+type SchemaPolicyWarning {
+  end: CodePosition
+  message: String!
+  ruleId: String
+  start: CodePosition
+}
+
+type SchemaPolicyWarningConnection {
+  edges: [SchemaPolicyWarningEdge!]!
+  pageInfo: PageInfo!
+}
+
+type SchemaPolicyWarningEdge {
+  cursor: String!
+  node: SchemaPolicyWarning!
+}
+
+type SchemaPublishError {
+  changes: SchemaChangeConnection
+  errors: SchemaErrorConnection!
+  linkToWebsite: String
+  valid: Boolean!
+}
+
+input SchemaPublishGitHubInput {
+  """The commit sha."""
+  commit: String!
+  """The repository name."""
+  repository: String!
+}
+
+input SchemaPublishInput {
+  author: String!
+  commit: String!
+  """Accept breaking changes and mark schema as valid (if composable)"""
+  experimental_acceptBreakingChanges: Boolean @deprecated(reason: "Enabled by default for newly created projects")
+  force: Boolean @deprecated(reason: "Enabled by default for newly created projects")
+  """Link GitHub version to a GitHub commit on a repository."""
+  gitHub: SchemaPublishGitHubInput
+  """Talk to GitHub Application and create a check-run"""
+  github: Boolean @deprecated(reason: "Use SchemaPublishInput.gitHub instead.")
+  metadata: String
+  sdl: String!
+  service: ID
+  """
+  Whether the CLI supports retrying the schema publish, in case acquiring the schema publish lock fails due to a busy queue.
+  """
+  supportsRetry: Boolean
+  target: TargetReferenceInput
+  url: String
+}
+
+type SchemaPublishMissingServiceError {
+  message: String!
+}
+
+type SchemaPublishMissingUrlError {
+  message: String!
+}
+
+union SchemaPublishPayload = GitHubSchemaPublishError | GitHubSchemaPublishSuccess | SchemaPublishError | SchemaPublishMissingServiceError | SchemaPublishMissingUrlError | SchemaPublishRetry | SchemaPublishSuccess
+
+type SchemaPublishRetry {
+  reason: String!
+}
+
+type SchemaPublishSuccess {
+  changes: SchemaChangeConnection
+  initial: Boolean!
+  linkToWebsite: String
+  message: String
+  valid: Boolean!
+}
+
+type SchemaVersion {
+  baseSchema: String
+  breakingSchemaChanges: SchemaChangeConnection
+  """Contract versions of this schema version."""
+  contractVersions: ContractVersionConnection
+  date: DateTime!
+  deprecatedSchema(usage: DeprecatedSchemaExplorerUsageInput): DeprecatedSchemaExplorer
+  """Experimental: This field is not stable and may change in the future."""
+  explorer(usage: SchemaExplorerUsageInput): SchemaExplorer
+  """GitHub metadata associated with the schema version."""
+  githubMetadata: SchemaVersionGithubMetadata
+  """Whether this schema version has schema changes."""
+  hasSchemaChanges: Boolean!
+  id: ID!
+  """Whether this schema version is composable."""
+  isComposable: Boolean!
+  """Whether this is the first composable schema version."""
+  isFirstComposableVersion: Boolean!
+  log: RegistryLog!
+  """
+  The schema version against which this schema version was compared to in order to determine schema changes.
+  """
+  previousDiffableSchemaVersion: SchemaVersion
+  safeSchemaChanges: SchemaChangeConnection
+  schemaCompositionErrors: SchemaErrorConnection
+  schemas: SchemaConnection!
+  sdl: String
+  supergraph: String
+  """
+  List of tags in the schema version. E.g. when using Federation.
+  Tags can be used for filtering the schema via contracts.
+  """
+  tags: [String!]
+  unusedSchema(usage: UnusedSchemaExplorerUsageInput): UnusedSchemaExplorer
+  """
+  A schema version is valid if the composition and contract compositions are successful.
+  """
+  valid: Boolean!
+}
+
+type SchemaVersionConnection {
+  edges: [SchemaVersionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type SchemaVersionEdge {
+  cursor: String!
+  node: SchemaVersion!
+}
+
+type SchemaVersionGithubMetadata {
+  commit: String!
+  repository: String!
+}
+
+input SchemaVersionUpdateInput {
+  organizationSlug: String!
+  projectSlug: String!
+  targetSlug: String!
+  valid: Boolean!
+  versionId: ID!
+}
+
+type SchemaWarningConnection {
+  nodes: [SchemaCheckWarning!]!
+  total: Int!
+}
+
+input ServiceResourceAssignmentInput {
+  serviceName: String!
+}
+
+input SetTargetValidationInput {
+  enabled: Boolean!
+  organizationSlug: String!
+  projectSlug: String!
+  targetSlug: String!
+}
+
+type SingleSchema {
+  author: String!
+  commit: ID!
+  date: DateTime!
+  id: ID!
+  metadata: String
+  source: String!
+}
+
+input SlackChannelInput {
+  channel: String!
+}
+
+type Subscription {
+  """
+  Subscribe to logs from the OIDC provider integration.
+  Helpful for debugging failing logins.
+  """
+  oidcIntegrationLog(input: OIDCIntegrationLogSubscriptionInput!): OIDCIntegrationLogEvent!
+}
+
+"""A successful schema check."""
+type SuccessfulSchemaCheck implements SchemaCheck {
+  """Comment given when the schema check was approved."""
+  approvalComment: String
+  """The user that approved the schema check."""
+  approvedBy: User
+  """
+  Breaking changes can exist in an successful schema check if the check was manually approved.
+  """
+  breakingSchemaChanges: SchemaChangeConnection
+  compositeSchemaSDL: String
+  """Conditional breaking change metadata."""
+  conditionalBreakingChangeMetadata: SchemaCheckConditionalBreakingChangeMetadata
+  """Optional context ID to group schema checks together."""
+  contextId: String
+  """Results of the contracts"""
+  contractChecks: ContractCheckConnection
+  createdAt: String!
+  """The GitHub repository associated with the schema check."""
+  githubRepository: String
+  """Whether this schema check has any schema changes."""
+  hasSchemaChanges: Boolean!
+  """Whether this schema check has any composition errors."""
+  hasSchemaCompositionErrors: Boolean!
+  """Whether this schema check has any breaking changes."""
+  hasUnapprovedBreakingChanges: Boolean!
+  id: ID!
+  """Whether the schema check was manually approved."""
+  isApproved: Boolean!
+  """Meta information about the schema check."""
+  meta: SchemaCheckMeta
+  """The previous schema SDL. For composite schemas this is the service."""
+  previousSchemaSDL: String
+  safeSchemaChanges: SchemaChangeConnection
+  """
+  Schema policy errors can exist in an successful schema check if the check was manually approved.
+  """
+  schemaPolicyErrors: SchemaPolicyWarningConnection
+  schemaPolicyWarnings: SchemaPolicyWarningConnection
+  """The SDL of the schema that was checked."""
+  schemaSDL: String!
+  """
+  The schema version against this check was performed.
+  Is null if there is no schema version published yet.
+  """
+  schemaVersion: SchemaVersion
+  """
+  The name of the service that owns the schema. Is null for non composite project types.
+  """
+  serviceName: String
+  supergraphSDL: String
+  """The URL of the schema check on the Hive Web App."""
+  webUrl: String
+}
+
+type SupergraphMetadata {
+  """
+  List of service names that own the field/type.
+  Resolves to null if the entity (field, type, scalar) does not belong to any service.
+  """
+  ownedByServiceNames: [String!]
+}
+
+type SupportTicket {
+  comments: SupportTicketCommentConnection
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  priority: SupportTicketPriority!
+  status: SupportTicketStatus!
+  subject: String!
+  updatedAt: DateTime!
+}
+
+type SupportTicketComment {
+  body: String!
+  createdAt: DateTime!
+  fromSupport: Boolean!
+  id: ID!
+}
+
+type SupportTicketCommentConnection {
+  edges: [SupportTicketCommentEdge!]!
+  pageInfo: PageInfo!
+}
+
+type SupportTicketCommentEdge {
+  cursor: String!
+  node: SupportTicketComment!
+}
+
+type SupportTicketConnection {
+  edges: [SupportTicketEdge!]!
+  pageInfo: PageInfo!
+}
+
+input SupportTicketCreateInput {
+  description: String!
+  organizationSlug: String!
+  priority: SupportTicketPriority!
+  subject: String!
+}
+
+"""@oneOf"""
+type SupportTicketCreateResult {
+  error: SupportTicketCreateResultError
+  ok: SupportTicketCreateResultOk
+}
+
+type SupportTicketCreateResultError implements Error {
+  message: String!
+}
+
+type SupportTicketCreateResultOk {
+  supportTicketId: ID!
+}
+
+type SupportTicketEdge {
+  cursor: String!
+  node: SupportTicket!
+}
+
+enum SupportTicketPriority {
+  HIGH
+  NORMAL
+  URGENT
+}
+
+input SupportTicketReplyInput {
+  body: String!
+  organizationSlug: String!
+  ticketId: String!
+}
+
+"""@oneOf"""
+type SupportTicketReplyResult {
+  error: SupportTicketReplyResultError
+  ok: SupportTicketReplyResultOk
+}
+
+type SupportTicketReplyResultError implements Error {
+  message: String!
+}
+
+type SupportTicketReplyResultOk {
+  supportTicketId: ID!
+}
+
+enum SupportTicketStatus {
+  OPEN
+  SOLVED
+}
+
+type Target {
+  """
+  Get a list of paginated schema contracts that are active for the target.
+  """
+  activeContracts(after: String, first: Int): ContractConnection!
+  appDeployment(appName: String!, appVersion: String!): AppDeployment
+  """The app deployments for this target."""
+  appDeployments(after: String, first: Int): AppDeploymentConnection
+  baseSchema: String
+  """
+  A paginated connection of CDN tokens for accessing this target's artifacts.
+  """
+  cdnAccessTokens(after: String, first: Int): TargetCdnAccessTokenConnection!
+  """The URL for accessing this target's artifacts via the CDN."""
+  cdnUrl: String!
+  cleanId: ID! @deprecated(reason: "Use the 'slug' field instead.")
+  """Get a list of paginated schema contracts for the target."""
+  contracts(after: String, first: Int): ContractConnection!
+  documentCollection(id: ID!): DocumentCollection
+  documentCollectionOperation(id: ID!): DocumentCollectionOperation
+  documentCollections(after: String = null, first: Int = 100): DocumentCollectionConnection!
+  experimental_forcedLegacySchemaComposition: Boolean!
+  """The endpoint url of the target's explorer instance."""
+  graphqlEndpointUrl: String
+  """Whether any subscription operations were reported for this target."""
+  hasCollectedSubscriptionOperations: Boolean!
+  hasSchema: Boolean!
+  id: ID!
+  latestSchemaVersion: SchemaVersion
+  """The latest valid (composable) schema version."""
+  latestValidSchemaVersion: SchemaVersion
+  name: String! @deprecated(reason: "Use the 'slug' field instead.")
+  operation(hash: String!): Operation
+  preflightScript: PreflightScript
+  project: Project!
+  requestsOverTime(period: DateRangeInput!, resolution: Int!): [RequestsOverTime!]!
+  """Get a schema check for the target by ID."""
+  schemaCheck(id: ID!): SchemaCheck
+  """Get a list of paginated schema checks for a target."""
+  schemaChecks(after: String, filters: SchemaChecksFilter, first: Int): SchemaCheckConnection!
+  schemaVersion(id: ID!): SchemaVersion
+  schemaVersions(after: String, first: Int): SchemaVersionConnection!
+  schemaVersionsCount(period: DateRangeInput): Int!
+  slug: String!
+  tokens: TokenConnection!
+  totalRequests(period: DateRangeInput!): SafeInt!
+  validationSettings: TargetValidationSettings!
+  viewerCanAccessSettings: Boolean!
+  viewerCanDelete: Boolean!
+  viewerCanModifyCDNAccessToken: Boolean!
+  viewerCanModifyLaboratory: Boolean!
+  viewerCanModifySettings: Boolean!
+  viewerCanModifyTargetAccessToken: Boolean!
+  """Whether the viewer can access the app deployments within a target."""
+  viewerCanViewAppDeployments: Boolean!
+  viewerCanViewLaboratory: Boolean!
+}
+
+enum TargetAccessScope {
+  DELETE
+  READ
+  REGISTRY_READ
+  REGISTRY_WRITE
+  SETTINGS
+  TOKENS_READ
+  TOKENS_WRITE
+}
+
+type TargetAppDeploymentsResourceAssignment {
+  appDeployments: [String!]
+  mode: ResourceAssignmentMode!
+}
+
+input TargetAppDeploymentsResourceAssignmentInput {
+  """
+  Specific app deployments within the target for which the permissions should be applied.
+  """
+  appDeployments: [AppDeploymentResourceAssignmentInput!]
+  """
+  Whether the permissions should apply for all app deployments within the target.
+  """
+  mode: ResourceAssignmentMode!
+}
+
+type TargetCdnAccessTokenConnection {
+  edges: [TargetCdnAccessTokenEdge!]!
+  pageInfo: PageInfo!
+}
+
+type TargetCdnAccessTokenEdge {
+  cursor: String!
+  node: CdnAccessToken!
+}
+
+type TargetConnection {
+  nodes: [Target!]!
+  total: Int!
+}
+
+"""Reference to a target."""
+input TargetReferenceInput  {
+  # gqlqclient doesnt support oneOf, lets force bySelector
+  # """Reference to a target using it's ID (see "Target.id" field)."""
+  # byId: ID
+  # """
+  # Reference to a target using it's slug parts (see "Organization.slug", "Project.slug", "Target.slug").
+  # """
+  bySelector: TargetSelectorInput
+}
+
+type TargetResouceAssignment {
+  appDeployments: TargetAppDeploymentsResourceAssignment!
+  services: TargetServicesResourceAssignment!
+  target: Target!
+  targetId: ID!
+}
+
+input TargetResourceAssignmentInput {
+  appDeployments: TargetAppDeploymentsResourceAssignmentInput!
+  services: TargetServicesResourceAssignmentInput!
+  targetId: ID!
+}
+
+type TargetSelector {
+  organizationSlug: String!
+  projectSlug: String!
+  targetSlug: String!
+}
+
+input TargetSelectorInput {
+  organizationSlug: String!
+  projectSlug: String!
+  targetSlug: String!
+}
+
+type TargetServicesResourceAssignment {
+  mode: ResourceAssignmentMode!
+  services: [String!]
+}
+
+input TargetServicesResourceAssignmentInput {
+  """
+  Whether the permissions should apply for all services within the target or only selected ones.
+  """
+  mode: ResourceAssignmentMode!
+  """
+  Specific services within the target for which the permissions should be applied.
+  """
+  services: [ServiceResourceAssignmentInput!]
+}
+
+type TargetValidationSettings {
+  """
+  Determines which formula is used to determine if a change is considered breaking
+  or not. Only one formula can be used at a time.
+  """
+  breakingChangeFormula: BreakingChangeFormula!
+  enabled: Boolean!
+  excludedClients: [String!]!
+  """
+  If TargetValidationSettings.breakingChangeFormula is PERCENTAGE, then this
+  is the percent of the total operations over the TargetValidationSettings.period
+  required for a change to be considered breaking.
+  """
+  percentage: Float!
+  period: Int!
+  """
+  If TargetValidationSettings.breakingChangeFormula is REQUEST_COUNT, then this
+  is the total number of operations over the TargetValidationSettings.period
+  required for a change to be considered breaking.
+  """
+  requestCount: Int!
+  targets: [Target!]!
+}
+
+type TeamsWebhookChannel implements AlertChannel {
+  endpoint: String!
+  id: ID!
+  name: String!
+  type: AlertChannelType!
+}
+
+type TestExternalSchemaCompositionError implements Error {
+  message: String!
+}
+
+input TestExternalSchemaCompositionInput {
+  organizationSlug: String!
+  projectSlug: String!
+}
+
+"""@oneOf"""
+type TestExternalSchemaCompositionResult {
+  error: TestExternalSchemaCompositionError
+  ok: Project
+}
+
+type Token {
+  alias: String!
+  date: DateTime!
+  id: ID!
+  lastUsedAt: DateTime
+  name: String!
+}
+
+type TokenConnection {
+  nodes: [Token!]!
+  total: Int!
+}
+
+type TokenInfo {
+  hasOrganizationScope(scope: OrganizationAccessScope!): Boolean!
+  hasProjectScope(scope: ProjectAccessScope!): Boolean!
+  hasTargetScope(scope: TargetAccessScope!): Boolean!
+  organization: Organization!
+  project: Project!
+  target: Target!
+  token: Token!
+}
+
+union TokenInfoPayload = TokenInfo | TokenNotFoundError
+
+type TokenNotFoundError {
+  message: String!
+}
+
+type UnusedSchemaExplorer {
+  types: [GraphQLNamedType!]!
+}
+
+input UnusedSchemaExplorerUsageInput {
+  period: DateRangeInput!
+}
+
+type UpdateBaseSchemaError implements Error {
+  message: String!
+}
+
+input UpdateBaseSchemaInput {
+  newBase: String
+  organizationSlug: String!
+  projectSlug: String!
+  targetSlug: String!
+}
+
+type UpdateBaseSchemaOk {
+  updatedTarget: Target!
+}
+
+type UpdateBaseSchemaResult {
+  error: UpdateBaseSchemaError
+  ok: UpdateBaseSchemaOk
+}
+
+input UpdateDocumentCollectionInput {
+  collectionId: ID!
+  description: String
+  name: String!
+}
+
+input UpdateDocumentCollectionOperationInput {
+  collectionId: ID!
+  headers: String
+  name: String
+  operationId: ID!
+  query: String
+  variables: String
+}
+
+type UpdateMeError implements Error {
+  """The detailed validation error messages for the input fields."""
+  inputErrors: UpdateMeInputErrors!
+  message: String!
+}
+
+input UpdateMeInput {
+  displayName: String!
+  fullName: String!
+}
+
+type UpdateMeInputErrors {
+  displayName: String
+  fullName: String
+}
+
+type UpdateMeOk {
+  updatedUser: User!
+}
+
+"""@oneOf"""
+type UpdateMeResult {
+  error: UpdateMeError
+  ok: UpdateMeOk
+}
+
+type UpdateMemberRoleError implements Error {
+  """The detailed validation error messages for the input fields."""
+  inputErrors: UpdateMemberRoleInputErrors
+  message: String!
+}
+
+input UpdateMemberRoleInput {
+  description: String!
+  name: String!
+  organizationSlug: String!
+  roleId: ID!
+  selectedPermissions: [String!]!
+}
+
+type UpdateMemberRoleInputErrors {
+  description: String
+  name: String
+}
+
+type UpdateMemberRoleOk {
+  updatedRole: MemberRole!
+}
+
+"""@oneOf"""
+type UpdateMemberRoleResult {
+  error: UpdateMemberRoleError
+  ok: UpdateMemberRoleOk
+}
+
+type UpdateNativeFederationError implements Error {
+  message: String!
+}
+
+input UpdateNativeFederationInput {
+  enabled: Boolean!
+  organizationSlug: String!
+  projectSlug: String!
+}
+
+"""@oneOf"""
+type UpdateNativeFederationResult {
+  error: UpdateNativeFederationError
+  ok: Project
+}
+
+type UpdateOIDCDefaultMemberRoleError implements Error {
+  message: String!
+}
+
+input UpdateOIDCDefaultMemberRoleInput {
+  defaultMemberRoleId: ID!
+  oidcIntegrationId: ID!
+}
+
+type UpdateOIDCDefaultMemberRoleOk {
+  updatedOIDCIntegration: OIDCIntegration!
+}
+
+"""@oneOf"""
+type UpdateOIDCDefaultMemberRoleResult {
+  error: UpdateOIDCDefaultMemberRoleError
+  ok: UpdateOIDCDefaultMemberRoleOk
+}
+
+type UpdateOIDCIntegrationError implements Error {
+  details: UpdateOIDCIntegrationErrorDetails!
+  message: String!
+}
+
+type UpdateOIDCIntegrationErrorDetails {
+  authorizationEndpoint: String
+  clientId: String
+  clientSecret: String
+  tokenEndpoint: String
+  userinfoEndpoint: String
+}
+
+input UpdateOIDCIntegrationInput {
+  authorizationEndpoint: String
+  clientId: ID
+  clientSecret: String
+  oidcIntegrationId: ID!
+  tokenEndpoint: String
+  userinfoEndpoint: String
+}
+
+type UpdateOIDCIntegrationOk {
+  updatedOIDCIntegration: OIDCIntegration!
+}
+
+type UpdateOIDCIntegrationResult {
+  error: UpdateOIDCIntegrationError
+  ok: UpdateOIDCIntegrationOk
+}
+
+type UpdateOIDCRestrictionsError implements Error {
+  message: String!
+}
+
+input UpdateOIDCRestrictionsInput {
+  oidcIntegrationId: ID!
+  """
+  Applies only to newly invited members.
+  Existing members are not affected.
+  """
+  oidcUserAccessOnly: Boolean!
+}
+
+type UpdateOIDCRestrictionsOk {
+  updatedOIDCIntegration: OIDCIntegration!
+}
+
+"""@oneOf"""
+type UpdateOIDCRestrictionsResult {
+  error: UpdateOIDCRestrictionsError
+  ok: UpdateOIDCRestrictionsOk
+}
+
+type UpdateOrganizationSlugError implements Error {
+  message: String!
+}
+
+input UpdateOrganizationSlugInput {
+  organizationSlug: String!
+  slug: String!
+}
+
+type UpdateOrganizationSlugOk {
+  updatedOrganizationPayload: OrganizationPayload!
+}
+
+type UpdateOrganizationSlugResult {
+  error: UpdateOrganizationSlugError
+  ok: UpdateOrganizationSlugOk
+}
+
+input UpdatePreflightScriptInput {
+  selector: TargetSelectorInput!
+  sourceCode: String!
+}
+
+type UpdateProjectGitRepositoryError implements Error {
+  message: String!
+}
+
+input UpdateProjectGitRepositoryInput {
+  gitRepository: String
+  organizationSlug: String!
+  projectSlug: String!
+}
+
+type UpdateProjectGitRepositoryOk {
+  selector: ProjectSelector!
+  updatedProject: Project!
+}
+
+type UpdateProjectGitRepositoryResult {
+  error: UpdateProjectGitRepositoryError
+  ok: UpdateProjectGitRepositoryOk
+}
+
+type UpdateProjectPayload {
+  selector: ProjectSelector!
+  updatedProject: Project!
+}
+
+type UpdateProjectSlugError implements Error {
+  message: String!
+}
+
+input UpdateProjectSlugInput {
+  organizationSlug: String!
+  projectSlug: String!
+  slug: String!
+}
+
+type UpdateProjectSlugOk {
+  project: Project!
+  selector: ProjectSelector!
+}
+
+type UpdateProjectSlugResult {
+  error: UpdateProjectSlugError
+  ok: UpdateProjectSlugOk
+}
+
+type UpdateSchemaPolicyResult {
+  error: Error
+  ok: UpdateSchemaPolicyResultOk
+}
+
+type UpdateSchemaPolicyResultError implements Error {
+  code: String
+  message: String!
+}
+
+type UpdateSchemaPolicyResultOk {
+  organization: Organization
+  project: Project
+  updatedPolicy: SchemaPolicy!
+}
+
+type UpdateTargetGraphQLEndpointUrlError {
+  message: String!
+}
+
+input UpdateTargetGraphQLEndpointUrlInput {
+  graphqlEndpointUrl: String
+  organizationSlug: String!
+  projectSlug: String!
+  targetSlug: String!
+}
+
+type UpdateTargetGraphQLEndpointUrlOk {
+  target: Target!
+}
+
+type UpdateTargetGraphQLEndpointUrlResult {
+  error: UpdateTargetGraphQLEndpointUrlError
+  ok: UpdateTargetGraphQLEndpointUrlOk
+}
+
+type UpdateTargetSlugError implements Error {
+  message: String!
+}
+
+input UpdateTargetSlugInput {
+  organizationSlug: String!
+  projectSlug: String!
+  slug: String!
+  targetSlug: String!
+}
+
+type UpdateTargetSlugOk {
+  selector: TargetSelector!
+  target: Target!
+}
+
+type UpdateTargetSlugResult {
+  error: UpdateTargetSlugError
+  ok: UpdateTargetSlugOk
+}
+
+type UpdateTargetValidationSettingsError implements Error {
+  inputErrors: UpdateTargetValidationSettingsInputErrors!
+  message: String!
+}
+
+input UpdateTargetValidationSettingsInput {
+  breakingChangeFormula: BreakingChangeFormula! = PERCENTAGE
+  excludedClients: [String!]
+  organizationSlug: String!
+  percentage: Float!
+  period: Int!
+  projectSlug: String!
+  requestCount: Int! = 1
+  targetIds: [ID!]!
+  targetSlug: String!
+}
+
+type UpdateTargetValidationSettingsInputErrors {
+  percentage: String
+  period: String
+  requestCount: String
+}
+
+type UpdateTargetValidationSettingsOk {
+  target: Target!
+}
+
+type UpdateTargetValidationSettingsResult {
+  error: UpdateTargetValidationSettingsError
+  ok: UpdateTargetValidationSettingsOk
+}
+
+input UpgradeToProInput {
+  couponCode: String
+  monthlyLimits: RateLimitInput!
+  organization: OrganizationSelectorInput!
+  paymentMethodId: String
+}
+
+type UsageEstimation {
+  operations: SafeInt!
+}
+
+input UsageEstimationInput {
+  month: Int!
+  organizationSlug: String!
+  year: Int!
+}
+
+enum UsageRateLimitType {
+  MONTHLY_LIMITED
+  MONTHLY_QUOTA
+  UNLIMITED
+}
+
+type User {
+  canSwitchOrganization: Boolean!
+  displayName: String!
+  email: String!
+  fullName: String!
+  id: ID!
+  isAdmin: Boolean!
+  provider: AuthProvider!
+}
+
+type UserConnection {
+  nodes: [User!]!
+  total: Int!
+}
+
+input WebhookChannelInput {
+  endpoint: String!
+}
