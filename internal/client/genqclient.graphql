@@ -1,0 +1,151 @@
+# @genqlient(for: "SchemaCheckInput.contextId", omitempty: true)
+# @genqlient(for: "SchemaCheckInput.github", omitempty: true, pointer: true)
+# @genqlient(for: "SchemaCheckInput.meta", omitempty: true, pointer: true)
+# @genqlient(for: "SchemaCheckInput.target", omitempty: true, pointer: true)
+mutation SchemaCheck(
+  $input: SchemaCheckInput! # Keep on separate line for gqlqlient parser
+) {
+  schemaCheck(input: $input) {
+    __typename
+    ... on SchemaCheckSuccess {
+      valid
+      initial
+      schemaCheck {
+        id
+        webUrl
+      }
+    }
+    ... on SchemaCheckError {
+      valid
+      errors {
+        nodes {
+          message
+        }
+        total
+      }
+      schemaCheck {
+        id
+        webUrl
+      }
+    }
+    ... on GitHubSchemaCheckSuccess {
+      message
+    }
+    ... on GitHubSchemaCheckError {
+      message
+    }
+  }
+}
+
+# @genqlient(for: "SchemaPublishInput.target", omitempty: true, pointer: true)
+# @genqlient(for: "SchemaPublishInput.gitHub", omitempty: true, pointer: true)
+mutation SchemaPublish(
+  $input: SchemaPublishInput! # Keep on separate line for gqlqlient parser
+  $usesGitHubApp: Boolean!
+) {
+  schemaPublish(input: $input) {
+    __typename
+    ... on SchemaPublishSuccess @skip(if: $usesGitHubApp) {
+      initial
+      valid
+      successMessage: message
+      linkToWebsite
+    }
+    ... on SchemaPublishError @skip(if: $usesGitHubApp) {
+      valid
+      linkToWebsite
+      errors {
+        nodes {
+          message
+        }
+        total
+      }
+    }
+    ... on SchemaPublishMissingServiceError @skip(if: $usesGitHubApp) {
+      message
+    }
+    ... on SchemaPublishMissingUrlError @skip(if: $usesGitHubApp) {
+      message
+    }
+    ... on GitHubSchemaPublishSuccess @include(if: $usesGitHubApp) {
+      message
+    }
+    ... on GitHubSchemaPublishError @include(if: $usesGitHubApp) {
+      message
+    }
+    ... on SchemaPublishRetry {
+      reason
+    }
+  }
+}
+
+# @genqlient(for: "CreateAppDeploymentInput.target", omitempty: true, pointer: true)
+mutation CreateAppDeployment(
+  $input: CreateAppDeploymentInput! # Keep on separate line for gqlqlient parser
+) {
+  createAppDeployment(input: $input) {
+    # @genqlient(pointer: true)
+    ok {
+      createdAppDeployment {
+        id
+        name
+        version
+        status
+      }
+    }
+    # @genqlient(pointer: true)
+    error {
+      message
+    }
+  }
+}
+
+# @genqlient(for: "AddDocumentsToAppDeploymentInput.target", omitempty: true, pointer: true)
+mutation AddDocumentsToAppDeployment(
+  $input: AddDocumentsToAppDeploymentInput! # Keep on separate line for gqlqlient parser
+) {
+  addDocumentsToAppDeployment(input: $input) {
+    # @genqlient(pointer: true)
+    ok {
+      appDeployment {
+        id
+        name
+        version
+        status
+      }
+    }
+    # @genqlient(pointer: true)
+    error {
+      message
+      details {
+        index
+        message
+        __typename
+      }
+    }
+  }
+}
+
+# @genqlient(for: "ActivateAppDeploymentInput.target", omitempty: true, pointer: true)
+mutation ActivateAppDeployment(
+  $input: ActivateAppDeploymentInput! # Keep on separate line for gqlqlient parser
+) {
+  activateAppDeployment(input: $input) {
+
+    # @genqlient(pointer: true)
+    ok {
+      activatedAppDeployment {
+        id
+        name
+        version
+        status
+      }
+      isSkipped
+    }
+
+    # @genqlient(pointer: true)
+    error {
+      message
+    }
+  }
+}
