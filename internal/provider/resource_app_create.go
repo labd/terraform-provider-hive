@@ -51,14 +51,23 @@ func (r *HiveAppCreateResource) Schema(ctx context.Context, req resource.SchemaR
 			"name": schema.StringAttribute{
 				MarkdownDescription: "The service name",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"version": schema.StringAttribute{
 				MarkdownDescription: "The commit or version identifier",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"documents": schema.StringAttribute{
 				MarkdownDescription: "The GraphQL schema content",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
