@@ -15,6 +15,7 @@ type SchemaPublishInput struct {
 	Service string
 	Schema  string
 	URL     string
+	Author  string
 	Commit  string
 }
 
@@ -26,13 +27,28 @@ type SchemaPublishResult struct {
 
 func (hc *HiveClient) SchemaPublish(ctx context.Context, input *SchemaPublishInput) (*SchemaPublishResult, error) {
 
-	data, err := client.SchemaPublish(ctx, *hc.client, client.SchemaPublishInput{
+	vars := client.SchemaPublishInput{
 		Service: input.Service,
 		Commit:  input.Commit,
-		Author:  "Michael van Tellingen <m.vantellingen@labdigital.nl>",
+		Author:  input.Author,
 		Sdl:     minifySchema(input.Schema),
 		Url:     input.URL,
-	}, false)
+	}
+
+	// Try to get the latest commit info from git if it's not provided.
+	if vars.Commit == "" || vars.Author == "" {
+		gitInfo, err := GetLatestCommitInfo()
+		if err == nil {
+			if vars.Author == "" {
+				vars.Author = gitInfo.Author
+			}
+			if vars.Commit == "" {
+				vars.Commit = gitInfo.Hash
+			}
+		}
+	}
+
+	data, err := client.SchemaPublish(ctx, *hc.client, vars, false)
 
 	if err != nil {
 		tflog.Error(ctx, fmt.Sprintf("error: %v", err))

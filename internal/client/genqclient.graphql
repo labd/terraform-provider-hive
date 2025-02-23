@@ -39,6 +39,7 @@ mutation SchemaCheck(
 
 # @genqlient(for: "SchemaPublishInput.target", omitempty: true, pointer: true)
 # @genqlient(for: "SchemaPublishInput.gitHub", omitempty: true, pointer: true)
+# @genqlient(for: "SchemaPublishInput.metadata", omitempty: true)
 mutation SchemaPublish(
   $input: SchemaPublishInput! # Keep on separate line for gqlqlient parser
   $usesGitHubApp: Boolean!

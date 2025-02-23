@@ -33,6 +33,7 @@ type HiveSchemaCheckResource struct {
 type HiveSchemaCheckResourceModel struct {
 	Service types.String `tfsdk:"service"`
 	Commit  types.String `tfsdk:"commit"`
+	Author  types.String `tfsdk:"author"`
 	Schema  types.String `tfsdk:"schema"`
 	Id      types.String `tfsdk:"id"`
 }
@@ -54,11 +55,15 @@ func (r *HiveSchemaCheckResource) Schema(ctx context.Context, req resource.Schem
 			},
 			"commit": schema.StringAttribute{
 				MarkdownDescription: "The commit or version identifier",
-				Required:            true,
+				Optional:            true,
 			},
 			"schema": schema.StringAttribute{
 				MarkdownDescription: "The GraphQL schema content",
 				Required:            true,
+			},
+			"author": schema.StringAttribute{
+				MarkdownDescription: "The author of the version",
+				Optional:            true,
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
@@ -156,6 +161,8 @@ func (r *HiveSchemaCheckResource) ExecuteRequest(ctx context.Context, data *Hive
 	result, err := r.client.SchemaCheck(ctx, &sdk.SchemaCheckInput{
 		Service: data.Service.ValueString(),
 		Schema:  data.Schema.ValueString(),
+		Commit:  data.Commit.ValueString(),
+		Author:  data.Author.ValueString(),
 	})
 
 	if err != nil {

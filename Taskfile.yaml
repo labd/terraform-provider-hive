@@ -3,6 +3,7 @@ version: '3'
 tasks:
   build-local:
     cmds:
+      - go run github.com/Khan/genqlient
       - go build -o terraform-provider-hive_{{ .VERSION }}
       - mkdir -p ~/.terraform.d/plugins/registry.terraform.io/labd/hive/{{ .VERSION }}/{{ .PLATFORM }}/
       - mv terraform-provider-hive_{{ .VERSION }} ~/.terraform.d/plugins/registry.terraform.io/labd/hive/{{ .VERSION }}/{{ .PLATFORM }}/terraform-provider-hive_v{{ .VERSION }}

@@ -33,6 +33,7 @@ type HiveSchemaPublishResource struct {
 type HiveSchemaPublishResourceModel struct {
 	Service types.String `tfsdk:"service"`
 	Commit  types.String `tfsdk:"commit"`
+	Author  types.String `tfsdk:"author"`
 	Schema  types.String `tfsdk:"schema"`
 	URL     types.String `tfsdk:"url"`
 	Id      types.String `tfsdk:"id"`
@@ -55,7 +56,11 @@ func (r *HiveSchemaPublishResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"commit": schema.StringAttribute{
 				MarkdownDescription: "The commit or version identifier",
-				Required:            true,
+				Optional:            true,
+			},
+			"author": schema.StringAttribute{
+				MarkdownDescription: "The author of the version",
+				Optional:            true,
 			},
 			"schema": schema.StringAttribute{
 				MarkdownDescription: "The GraphQL schema content",
@@ -162,6 +167,7 @@ func (r *HiveSchemaPublishResource) ExecuteRequest(ctx context.Context, data *Hi
 		Service: data.Service.ValueString(),
 		Schema:  data.Schema.ValueString(),
 		Commit:  data.Commit.ValueString(),
+		Author:  data.Author.ValueString(),
 		URL:     data.URL.ValueString(),
 	})
 

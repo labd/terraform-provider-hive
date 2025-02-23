@@ -12,6 +12,8 @@ import (
 type SchemaCheckInput struct {
 	Service string
 	Schema  string
+	Author  string
+	Commit  string
 }
 
 type SchemaCheckResult struct {
@@ -21,14 +23,28 @@ type SchemaCheckResult struct {
 }
 
 func (hc *HiveClient) SchemaCheck(ctx context.Context, input *SchemaCheckInput) (*SchemaCheckResult, error) {
+	meta := &client.SchemaCheckMetaInput{
+		Author: input.Author,
+		Commit: input.Commit,
+	}
 
-	data, err := client.SchemaCheck(ctx, *hc.client, client.SchemaCheckInput{
+	if meta.Author == "" || meta.Commit == "" {
+		gitInfo, err := GetLatestCommitInfo()
+		if err == nil {
+			if meta.Author == "" {
+				meta.Author = gitInfo.Author
+			}
+
+			if meta.Commit == "" {
+				meta.Commit = gitInfo.Hash
+			}
+		}
+	}
+
+	vars := client.SchemaCheckInput{
 		Service: input.Service,
 		Sdl:     minifySchema(input.Schema),
-		// Meta: client.SchemaCheckMetaInput{
-		// 	Author: "Michael",
-		// 	Commit: "123456",
-		// },
+		Meta:    meta,
 		// Target: client.TargetReferenceInput{
 		// 	BySelector: client.TargetSelectorInput{
 		// 		OrganizationSlug: "..",
@@ -36,7 +52,9 @@ func (hc *HiveClient) SchemaCheck(ctx context.Context, input *SchemaCheckInput) 
 		// 		TargetSlug:       "development",
 		// 	},
 		// },
-	})
+	}
+
+	data, err := client.SchemaCheck(ctx, *hc.client, vars)
 
 	if err != nil {
 		tflog.Error(ctx, fmt.Sprintf("error: %v", err))

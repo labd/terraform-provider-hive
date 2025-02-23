@@ -1115,7 +1115,7 @@ type SchemaPublishInput struct {
 	GitHub *SchemaPublishGitHubInput `json:"gitHub,omitempty"`
 	// Talk to GitHub Application and create a check-run
 	Github   bool   `json:"github"`
-	Metadata string `json:"metadata"`
+	Metadata string `json:"metadata,omitempty"`
 	Sdl      string `json:"sdl"`
 	Service  string `json:"service"`
 	// Whether the CLI supports retrying the schema publish, in case acquiring the schema publish lock fails due to a busy queue.

@@ -34,7 +34,7 @@ type HiveProvider struct {
 // HiveProviderModel describes the provider data model.
 type HiveProviderModel struct {
 	Endpoint types.String `tfsdk:"endpoint"`
-	Token    types.String `tfsdk:"registry_token"`
+	Token    types.String `tfsdk:"token"`
 }
 
 func (p *HiveProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -46,7 +46,7 @@ func (p *HiveProvider) Schema(ctx context.Context, req provider.SchemaRequest, r
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"endpoint": schema.StringAttribute{
-				MarkdownDescription: "Example provider attribute",
+				MarkdownDescription: "The endpoint of the Hive API",
 				Optional:            true,
 			},
 			"token": schema.StringAttribute{

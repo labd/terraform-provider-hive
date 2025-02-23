@@ -3,7 +3,6 @@ package sdk
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"net/http/httputil"
 
@@ -48,20 +47,17 @@ func logRequest(ctx context.Context, r *http.Request) {
 	if err != nil {
 		return
 	}
-	tflog.Info(ctx, fmt.Sprintf(logRequestTemplate, body))
-	log.Printf(logRequestTemplate, body)
+	tflog.Debug(ctx, fmt.Sprintf(logRequestTemplate, body))
 }
 
 func logResponse(ctx context.Context, r *http.Response, err error) {
 	if err != nil {
-		tflog.Info(ctx, fmt.Sprintf(logResponseTemplate, err))
-		log.Printf(logResponseTemplate, err)
+		tflog.Debug(ctx, fmt.Sprintf(logResponseTemplate, err))
 		return
 	}
 	body, err := httputil.DumpResponse(r, true)
 	if err != nil {
 		return
 	}
-	tflog.Info(ctx, fmt.Sprintf(logResponseTemplate, body))
-	log.Printf(logResponseTemplate, body)
+	tflog.Debug(ctx, fmt.Sprintf(logResponseTemplate, body))
 }
