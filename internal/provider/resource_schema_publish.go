@@ -53,22 +53,37 @@ func (r *HiveSchemaPublishResource) Schema(ctx context.Context, req resource.Sch
 			"service": schema.StringAttribute{
 				MarkdownDescription: "The service name",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"commit": schema.StringAttribute{
 				MarkdownDescription: "The commit or version identifier",
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"author": schema.StringAttribute{
 				MarkdownDescription: "The author of the version",
 				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"schema": schema.StringAttribute{
 				MarkdownDescription: "The GraphQL schema content",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"url": schema.StringAttribute{
 				MarkdownDescription: "The GraphQL schema content",
 				Required:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
