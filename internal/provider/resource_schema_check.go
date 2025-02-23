@@ -31,11 +31,12 @@ type HiveSchemaCheckResource struct {
 
 // HiveSchemaCheckResourceModel describes the resource data model.
 type HiveSchemaCheckResourceModel struct {
-	Service types.String `tfsdk:"service"`
-	Commit  types.String `tfsdk:"commit"`
-	Author  types.String `tfsdk:"author"`
-	Schema  types.String `tfsdk:"schema"`
-	Id      types.String `tfsdk:"id"`
+	Service   types.String `tfsdk:"service"`
+	Commit    types.String `tfsdk:"commit"`
+	Author    types.String `tfsdk:"author"`
+	Schema    types.String `tfsdk:"schema"`
+	ContextId types.String `tfsdk:"context_id"`
+	Id        types.String `tfsdk:"id"`
 }
 
 // Metadata returns the resource type name.
@@ -72,6 +73,13 @@ func (r *HiveSchemaCheckResource) Schema(ctx context.Context, req resource.Schem
 			},
 			"author": schema.StringAttribute{
 				MarkdownDescription: "The author of the version",
+				Optional:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"context_id": schema.StringAttribute{
+				MarkdownDescription: "Context ID allows retaining approved breaking changes with the lifecycle",
 				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -171,10 +179,11 @@ func (r *HiveSchemaCheckResource) ImportState(ctx context.Context, req resource.
 
 func (r *HiveSchemaCheckResource) ExecuteRequest(ctx context.Context, data *HiveSchemaCheckResourceModel) *diag.ErrorDiagnostic {
 	result, err := r.client.SchemaCheck(ctx, &sdk.SchemaCheckInput{
-		Service: data.Service.ValueString(),
-		Schema:  data.Schema.ValueString(),
-		Commit:  data.Commit.ValueString(),
-		Author:  data.Author.ValueString(),
+		Service:   data.Service.ValueString(),
+		Schema:    data.Schema.ValueString(),
+		Commit:    data.Commit.ValueString(),
+		Author:    data.Author.ValueString(),
+		ContextId: data.ContextId.ValueString(),
 	})
 
 	if err != nil {

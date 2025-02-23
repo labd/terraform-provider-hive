@@ -21,4 +21,4 @@ description: |-
 
 ### Optional
 
-- `endpoint` (String) Example provider attribute
+- `endpoint` (String) The endpoint of the Hive API

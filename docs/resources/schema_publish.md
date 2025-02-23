@@ -30,10 +30,14 @@ resource "hive_schema_publish" "example" {
 
 ### Required
 
-- `commit` (String) The commit or version identifier
 - `schema` (String) The GraphQL schema content
 - `service` (String) The service name
 - `url` (String) The GraphQL schema content
+
+### Optional
+
+- `author` (String) The author of the version
+- `commit` (String) The commit or version identifier
 
 ### Read-Only
 

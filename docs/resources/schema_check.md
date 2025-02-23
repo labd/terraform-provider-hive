@@ -29,9 +29,14 @@ resource "hive_schema_check" "example" {
 
 ### Required
 
-- `commit` (String) The commit or version identifier
 - `schema` (String) The GraphQL schema content
 - `service` (String) The service name
+
+### Optional
+
+- `author` (String) The author of the version
+- `commit` (String) The commit or version identifier
+- `context_id` (String) Context ID allows retaining approved breaking changes with the lifecycle
 
 ### Read-Only
 

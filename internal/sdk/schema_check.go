@@ -10,10 +10,11 @@ import (
 )
 
 type SchemaCheckInput struct {
-	Service string
-	Schema  string
-	Author  string
-	Commit  string
+	Service   string
+	Schema    string
+	Author    string
+	Commit    string
+	ContextId string
 }
 
 type SchemaCheckResult struct {
@@ -42,9 +43,10 @@ func (hc *HiveClient) SchemaCheck(ctx context.Context, input *SchemaCheckInput) 
 	}
 
 	vars := client.SchemaCheckInput{
-		Service: input.Service,
-		Sdl:     minifySchema(input.Schema),
-		Meta:    meta,
+		Service:   input.Service,
+		Sdl:       minifySchema(input.Schema),
+		Meta:      meta,
+		ContextId: input.ContextId,
 		// Target: client.TargetReferenceInput{
 		// 	BySelector: client.TargetSelectorInput{
 		// 		OrganizationSlug: "..",
