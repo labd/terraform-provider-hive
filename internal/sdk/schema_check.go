@@ -15,6 +15,8 @@ type SchemaCheckInput struct {
 	Author    string
 	Commit    string
 	ContextId string
+	Target    string
+	Project   string
 }
 
 type SchemaCheckResult struct {
@@ -24,10 +26,12 @@ type SchemaCheckResult struct {
 }
 
 func (hc *HiveClient) SchemaCheck(ctx context.Context, input *SchemaCheckInput) (*SchemaCheckResult, error) {
+
 	meta := &client.SchemaCheckMetaInput{
 		Author: input.Author,
 		Commit: input.Commit,
 	}
+
 
 	if meta.Author == "" || meta.Commit == "" {
 		gitInfo, err := GetLatestCommitInfo()
@@ -47,13 +51,7 @@ func (hc *HiveClient) SchemaCheck(ctx context.Context, input *SchemaCheckInput) 
 		Sdl:       minifySchema(input.Schema),
 		Meta:      meta,
 		ContextId: input.ContextId,
-		// Target: client.TargetReferenceInput{
-		// 	BySelector: client.TargetSelectorInput{
-		// 		OrganizationSlug: "..",
-		// 		ProjectSlug:      "michael-sandbox",
-		// 		TargetSlug:       "development",
-		// 	},
-		// },
+		Target:    getTarget(ctx, hc.Organization, input.Project, input.Target),
 	}
 
 	data, err := client.SchemaCheck(ctx, *hc.client, vars)
