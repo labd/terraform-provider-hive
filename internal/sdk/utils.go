@@ -23,7 +23,7 @@ func getTarget(ctx context.Context, input string) (*client.TargetReferenceInput,
 	split := strings.Split(input, "/")
 
  	if (len(split) != 3) {
-		return nil, fmt.Errorf(fmt.Sprintf("not a valid target: %v", input))
+		return nil, fmt.Errorf("not a valid target: %v", input)
 
 	}
 
