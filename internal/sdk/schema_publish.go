@@ -29,15 +29,13 @@ type SchemaPublishResult struct {
 
 func (hc *HiveClient) SchemaPublish(ctx context.Context, input *SchemaPublishInput) (*SchemaPublishResult, error) {
 
-	target := getTarget(ctx, hc.Organisation, input.Project, input.Target)
-
 	vars := client.SchemaPublishInput{
 		Service: input.Service,
 		Commit:  input.Commit,
 		Author:  input.Author,
 		Sdl:     minifySchema(input.Schema),
 		Url:     input.URL,
-		Target:  target,
+		Target:  getTarget(ctx, hc.Organisation, input.Project, input.Target),
 	}
 
 	// Try to get the latest commit info from git if it's not provided.

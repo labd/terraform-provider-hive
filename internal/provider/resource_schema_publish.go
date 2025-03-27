@@ -37,7 +37,7 @@ type HiveSchemaPublishResourceModel struct {
 	Schema  types.String `tfsdk:"schema"`
 	URL     types.String `tfsdk:"url"`
 	Id      types.String `tfsdk:"id"`
-	Project  types.String `tfsdk:"project"`
+	Project types.String `tfsdk:"project"`
 	Target  types.String `tfsdk:"target"`
 }
 

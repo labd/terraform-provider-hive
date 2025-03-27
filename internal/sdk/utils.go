@@ -19,7 +19,6 @@ func getTarget(ctx context.Context, organisation string, project string, target 
         return nil
     }
 
-
 	return &client.TargetReferenceInput{
 		BySelector: client.TargetSelectorInput{
 			OrganizationSlug: organisation,

@@ -46,14 +46,12 @@ func (hc *HiveClient) SchemaCheck(ctx context.Context, input *SchemaCheckInput) 
 		}
 	}
 
-	target := getTarget(ctx, hc.Organisation, input.Project, input.Target)
-
 	vars := client.SchemaCheckInput{
 		Service:   input.Service,
 		Sdl:       minifySchema(input.Schema),
 		Meta:      meta,
 		ContextId: input.ContextId,
-		Target:    target,
+		Target:    getTarget(ctx, hc.Organisation, input.Project, input.Target),
 	}
 
 	data, err := client.SchemaCheck(ctx, *hc.client, vars)
