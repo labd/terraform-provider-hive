@@ -18,6 +18,7 @@ type SchemaPublishInput struct {
 	Author  string
 	Commit  string
 	Target 	string
+	Project string
 }
 
 type SchemaPublishResult struct {
@@ -28,11 +29,7 @@ type SchemaPublishResult struct {
 
 func (hc *HiveClient) SchemaPublish(ctx context.Context, input *SchemaPublishInput) (*SchemaPublishResult, error) {
 
-	target, err := getTarget(ctx, input.Target)
-	if err != nil {
-		tflog.Error(ctx, fmt.Sprintf("error: %v", err))
-		return nil, err
-	}
+	target := getTarget(ctx, hc.Organisation, input.Project, input.Target)
 
 	vars := client.SchemaPublishInput{
 		Service: input.Service,

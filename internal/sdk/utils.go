@@ -2,7 +2,6 @@ package sdk
 
 import (
 	"context"
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -15,23 +14,17 @@ func minifySchema(schema string) string {
 	return strings.TrimSpace(re.ReplaceAllString(schema, " "))
 }
 
-func getTarget(ctx context.Context, input string) (*client.TargetReferenceInput, error)  {
-	if input == "" {
-        return nil, nil
+func getTarget(ctx context.Context, organisation string, project string, target string) (*client.TargetReferenceInput)  {
+	if organisation == "" || project == "" || target == "" {
+        return nil
     }
 
-	split := strings.Split(input, "/")
-
- 	if (len(split) != 3) {
-		return nil, fmt.Errorf("not a valid target: %v", input)
-
-	}
 
 	return &client.TargetReferenceInput{
 		BySelector: client.TargetSelectorInput{
-			OrganizationSlug: split[0],
-			ProjectSlug:      split[1],
-			TargetSlug:       split[2],
+			OrganizationSlug: organisation,
+			ProjectSlug:      project,
+			TargetSlug:       target,
 		},
-	}, nil
+	}
 }

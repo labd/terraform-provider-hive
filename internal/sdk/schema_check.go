@@ -16,6 +16,7 @@ type SchemaCheckInput struct {
 	Commit    string
 	ContextId string
 	Target    string
+	Project   string
 }
 
 type SchemaCheckResult struct {
@@ -45,11 +46,7 @@ func (hc *HiveClient) SchemaCheck(ctx context.Context, input *SchemaCheckInput) 
 		}
 	}
 
-	target, err := getTarget(ctx, input.Target)
-	if err != nil {
-		tflog.Error(ctx, fmt.Sprintf("error: %v", err))
-		return nil, err
-	}
+	target := getTarget(ctx, hc.Organisation, input.Project, input.Target)
 
 	vars := client.SchemaCheckInput{
 		Service:   input.Service,

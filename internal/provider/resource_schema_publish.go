@@ -37,6 +37,7 @@ type HiveSchemaPublishResourceModel struct {
 	Schema  types.String `tfsdk:"schema"`
 	URL     types.String `tfsdk:"url"`
 	Id      types.String `tfsdk:"id"`
+	Project  types.String `tfsdk:"project"`
 	Target  types.String `tfsdk:"target"`
 }
 
@@ -86,8 +87,15 @@ func (r *HiveSchemaPublishResource) Schema(ctx context.Context, req resource.Sch
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"project": schema.StringAttribute{
+				MarkdownDescription: "The project name",
+				Optional: 		  	  true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
 			"target": schema.StringAttribute{
-				MarkdownDescription: "The target as <YOUR_ORGANIZATION>/<YOUR_PROJECT>/<YOUR_TARGET>",
+				MarkdownDescription: "The target name",
 				Optional: 		  	  true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -192,6 +200,7 @@ func (r *HiveSchemaPublishResource) ExecuteRequest(ctx context.Context, data *Hi
 		Commit:  data.Commit.ValueString(),
 		Author:  data.Author.ValueString(),
 		URL:     data.URL.ValueString(),
+		Project: data.Project.ValueString(),
 		Target:  data.Target.ValueString(),
 	})
 

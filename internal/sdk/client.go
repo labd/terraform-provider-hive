@@ -20,13 +20,14 @@ func (hrt *HiveRoundTripper) RoundTrip(req *http.Request) (*http.Response, error
 	return hrt.rt.RoundTrip(req)
 }
 
-// HiveClient encapsulates an HTTP client, a GraphQL endpoint, and an API token.
+// HiveClient encapsulates an HTTP client, a GraphQL endpoint, an API token and an optional Organisation string.
 type HiveClient struct {
 	client *graphql.Client
+	Organisation string
 }
 
 // NewHiveClient creates a new HiveClient instance.
-func NewHiveClient(client *http.Client, endpoint, token string) *HiveClient {
+func NewHiveClient(client *http.Client, endpoint, organisation string, token string) *HiveClient {
 	client.Transport = &HiveRoundTripper{
 		rt:        client.Transport,
 		authToken: token,
@@ -37,5 +38,6 @@ func NewHiveClient(client *http.Client, endpoint, token string) *HiveClient {
 
 	return &HiveClient{
 		client: &gqlClient,
+		Organisation: organisation,
 	}
 }
