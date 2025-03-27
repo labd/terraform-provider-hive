@@ -1,3 +1,3 @@
 kind: Added
-body: Allow passing of `target` rather than only taking it from the hive key
+body: Allow setting of `organisation` on provider and passing of `project` and `target` to explicitly set a target rather than getting it from the hive key.
 time: 2025-03-27T10:32:40.614834807+01:00
