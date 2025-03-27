@@ -100,7 +100,8 @@ func (r *HiveSchemaPublishResource) Schema(ctx context.Context, req resource.Sch
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-	},
+		},
+	}
 }
 
 // Configure saves the provider configured HTTP client on the resource.
