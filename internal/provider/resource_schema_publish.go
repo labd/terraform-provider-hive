@@ -37,6 +37,7 @@ type HiveSchemaPublishResourceModel struct {
 	Schema  types.String `tfsdk:"schema"`
 	URL     types.String `tfsdk:"url"`
 	Id      types.String `tfsdk:"id"`
+	Target  types.String `tfsdk:"target"`
 }
 
 // Metadata returns the resource type name.
@@ -85,6 +86,13 @@ func (r *HiveSchemaPublishResource) Schema(ctx context.Context, req resource.Sch
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"target": schema.StringAttribute{
+				MarkdownDescription: "The target as <YOUR_ORGANIZATION>/<YOUR_PROJECT>/<YOUR_TARGET>",
+				Optional: 		  	  true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
 			"id": schema.StringAttribute{
 				Computed:            true,
 				MarkdownDescription: "The resource ID",
@@ -92,8 +100,7 @@ func (r *HiveSchemaPublishResource) Schema(ctx context.Context, req resource.Sch
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-		},
-	}
+	},
 }
 
 // Configure saves the provider configured HTTP client on the resource.
@@ -184,6 +191,7 @@ func (r *HiveSchemaPublishResource) ExecuteRequest(ctx context.Context, data *Hi
 		Commit:  data.Commit.ValueString(),
 		Author:  data.Author.ValueString(),
 		URL:     data.URL.ValueString(),
+		Target:  data.Target.ValueString(),
 	})
 
 	if err != nil {
