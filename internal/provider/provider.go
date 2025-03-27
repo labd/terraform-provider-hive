@@ -33,8 +33,9 @@ type HiveProvider struct {
 
 // HiveProviderModel describes the provider data model.
 type HiveProviderModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
-	Token    types.String `tfsdk:"token"`
+	Endpoint     types.String `tfsdk:"endpoint"`
+	Token        types.String `tfsdk:"token"`
+	Organization types.String `tfsdk:"organization"`
 }
 
 func (p *HiveProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -53,6 +54,10 @@ func (p *HiveProvider) Schema(ctx context.Context, req provider.SchemaRequest, r
 				MarkdownDescription: "The token to authenticate with the registry",
 				Required:            true,
 				Sensitive:           true,
+			},
+			"organization": schema.StringAttribute{
+				MarkdownDescription: "The organization within the registry",
+				Optional:            true,
 			},
 		},
 	}
@@ -81,7 +86,7 @@ func (p *HiveProvider) Configure(ctx context.Context, req provider.ConfigureRequ
 	httpClient := &http.Client{
 		Transport: sdk.NewDebugTransport(http.DefaultTransport),
 	}
-	client := sdk.NewHiveClient(httpClient, endpoint, token)
+	client := sdk.NewHiveClient(httpClient, endpoint, data.Organization.ValueString(), token)
 
 	resp.DataSourceData = client
 	resp.ResourceData = client
