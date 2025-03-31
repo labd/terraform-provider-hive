@@ -14,13 +14,24 @@ terraform {
   }
 }
 
+data "hive_schema_check" "my-service" {
+  project = "my-project"
+  target  = "my-target
+  service = "my-service"
+  schema  = file("schema.graphql")
+}
+
 resource "hive_schema_check" "my-service" {
+  project = "my-project"
+  target  = "my-target
   service = "my-service"
   commit  = "57ee05c"
   schema  = file("schema.graphql")
 }
 
 resource "hive_schema_publish" "my-service" {
+  project = "my-project"
+  target  = "my-target
   service = "my-service"
   commit  = "57ee05c"
   url     = "https://checkout.example.com/graphql"

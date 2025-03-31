@@ -106,7 +106,9 @@ func (p *HiveProvider) EphemeralResources(ctx context.Context) []func() ephemera
 }
 
 func (p *HiveProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{}
+	return []func() datasource.DataSource{
+		NewHiveSchemaCheckDataSource,
+	}
 }
 
 func (p *HiveProvider) Functions(ctx context.Context) []func() function.Function {
