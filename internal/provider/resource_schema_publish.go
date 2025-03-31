@@ -89,14 +89,14 @@ func (r *HiveSchemaPublishResource) Schema(ctx context.Context, req resource.Sch
 			},
 			"project": schema.StringAttribute{
 				MarkdownDescription: "The project name",
-				Optional: 		  	  true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"target": schema.StringAttribute{
 				MarkdownDescription: "The target name",
-				Optional: 		  	  true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},

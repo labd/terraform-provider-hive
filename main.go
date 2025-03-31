@@ -19,6 +19,12 @@ var (
 	// https://goreleaser.com/cookbooks/using-main.version/
 )
 
+//go:generate terraform fmt -recursive ./examples/
+
+// Run the docs generation tool, check its repository for more information on how it works and how docs
+// can be customized.
+//
+//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
 func main() {
 	var debug bool
 
@@ -26,7 +32,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/labd/terraform-provider-hive",
+		Address: "registry.terraform.io/labd/hive",
 		Debug:   debug,
 	}
 

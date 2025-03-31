@@ -17,7 +17,7 @@ type SchemaPublishInput struct {
 	URL     string
 	Author  string
 	Commit  string
-	Target 	string
+	Target  string
 	Project string
 }
 
