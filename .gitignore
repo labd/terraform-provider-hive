@@ -1,8 +1,6 @@
 terraform-provider-*
 .terraform/
 .terraform.lock.hcl
-*.tfstate
-*.tf
 *.graphql
 *.backup
 coverage.out

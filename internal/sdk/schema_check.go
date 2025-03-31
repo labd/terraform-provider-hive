@@ -32,7 +32,6 @@ func (hc *HiveClient) SchemaCheck(ctx context.Context, input *SchemaCheckInput) 
 		Commit: input.Commit,
 	}
 
-
 	if meta.Author == "" || meta.Commit == "" {
 		gitInfo, err := GetLatestCommitInfo()
 		if err == nil {

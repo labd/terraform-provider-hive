@@ -22,7 +22,7 @@ tasks:
   generate:
     cmds:
       - go run github.com/Khan/genqlient
-      - cd tools; go generate ./...
+      - go generate ./...
 
   format:
     cmds:

@@ -26,19 +26,17 @@ func (r *HiveSchemaCheckDataSource) Metadata(ctx context.Context, req datasource
 	resp.TypeName = req.ProviderTypeName + "_schema_check"
 }
 
-
 type HiveSchemaCheckDataSourceModel struct {
-	Service   types.String `tfsdk:"service"`
-	Commit    types.String `tfsdk:"commit"`
-	Author    types.String `tfsdk:"author"`
-	Schema    types.String `tfsdk:"schema"`
-	Id        types.String `tfsdk:"id"`
-	Target	  types.String `tfsdk:"target"`
-	Project	  types.String `tfsdk:"project"`
+	Service types.String `tfsdk:"service"`
+	Commit  types.String `tfsdk:"commit"`
+	Author  types.String `tfsdk:"author"`
+	Schema  types.String `tfsdk:"schema"`
+	Id      types.String `tfsdk:"id"`
+	Target  types.String `tfsdk:"target"`
+	Project types.String `tfsdk:"project"`
 }
 
-
-func (d *HiveSchemaCheckDataSource) Schema(ctx context.Context, _req datasource.SchemaRequest, resp *datasource.SchemaResponse)  {
+func (d *HiveSchemaCheckDataSource) Schema(ctx context.Context, _req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Data source to perform a schema check against a GraphQL schema",
 
@@ -61,11 +59,11 @@ func (d *HiveSchemaCheckDataSource) Schema(ctx context.Context, _req datasource.
 			},
 			"project": schema.StringAttribute{
 				MarkdownDescription: "The project name",
-				Optional: 		  	  true,
+				Optional:            true,
 			},
 			"target": schema.StringAttribute{
 				MarkdownDescription: "The target name",
-				Optional: 		  	  true,
+				Optional:            true,
 			},
 			"id": schema.StringAttribute{
 				Computed:            true,
@@ -101,14 +99,13 @@ func (r *HiveSchemaCheckDataSource) Read(ctx context.Context, req datasource.Rea
 		return
 	}
 
-
 	result, err := r.client.SchemaCheck(ctx, &sdk.SchemaCheckInput{
-		Service:   data.Service.ValueString(),
-		Schema:    data.Schema.ValueString(),
-		Commit:    data.Commit.ValueString(),
-		Author:    data.Author.ValueString(),
-		Target:    data.Target.ValueString(),
-		Project:   data.Project.ValueString(),
+		Service: data.Service.ValueString(),
+		Schema:  data.Schema.ValueString(),
+		Commit:  data.Commit.ValueString(),
+		Author:  data.Author.ValueString(),
+		Target:  data.Target.ValueString(),
+		Project: data.Project.ValueString(),
 	})
 
 	if err != nil {

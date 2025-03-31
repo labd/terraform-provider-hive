@@ -37,8 +37,8 @@ type HiveSchemaCheckResourceModel struct {
 	Schema    types.String `tfsdk:"schema"`
 	ContextId types.String `tfsdk:"context_id"`
 	Id        types.String `tfsdk:"id"`
-	Target	  types.String `tfsdk:"target"`
-	Project	  types.String `tfsdk:"project"`
+	Target    types.String `tfsdk:"target"`
+	Project   types.String `tfsdk:"project"`
 }
 
 // Metadata returns the resource type name.
@@ -89,14 +89,14 @@ func (r *HiveSchemaCheckResource) Schema(ctx context.Context, req resource.Schem
 			},
 			"project": schema.StringAttribute{
 				MarkdownDescription: "The project name",
-				Optional: 		  	  true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"target": schema.StringAttribute{
 				MarkdownDescription: "The target name",
-				Optional: 		  	  true,
+				Optional:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
