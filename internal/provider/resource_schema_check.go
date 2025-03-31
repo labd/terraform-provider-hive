@@ -38,7 +38,7 @@ type HiveSchemaCheckResourceModel struct {
 	ContextId types.String `tfsdk:"context_id"`
 	Id        types.String `tfsdk:"id"`
 	Target	  types.String `tfsdk:"target"`
-	Project	  types.String `tfsdk:"target"`
+	Project	  types.String `tfsdk:"project"`
 }
 
 // Metadata returns the resource type name.
