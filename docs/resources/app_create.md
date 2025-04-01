@@ -25,7 +25,7 @@ resource "hive_app_create" "example" {
 
 ### Required
 
-- `documents` (String) The GraphQL schema content
+- `documents` (String) A file with a list of generated document hashes
 - `name` (String) The service name
 - `version` (String) The commit or version identifier
 

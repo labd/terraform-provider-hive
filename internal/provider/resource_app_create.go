@@ -63,7 +63,7 @@ func (r *HiveAppCreateResource) Schema(ctx context.Context, req resource.SchemaR
 				},
 			},
 			"documents": schema.StringAttribute{
-				MarkdownDescription: "The GraphQL schema content",
+				MarkdownDescription: "A file with a list of generated document hashes",
 				Required:            true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
