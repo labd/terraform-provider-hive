@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/elliotchance/pie/v2"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 
 	"github.com/labd/terraform-provider-hive/internal/client"
 )
@@ -83,7 +85,13 @@ func (hc *HiveClient) CreateApp(ctx context.Context, input *CreateAppInput) (*Cr
 		result := data.GetAddDocumentsToAppDeployment()
 
 		if result.Error != nil {
-			return nil, fmt.Errorf("failed to add documents: %s", result.Error.Message)
+
+			// Skip this error for now. Need to investigate this further.
+			if result.Error.Message != "App deployment has already been activated and is locked for modifications" {
+				return nil, fmt.Errorf("failed to add documents: %s", result.Error.Message)
+			} else {
+				tflog.Debug(ctx, spew.Sdump(result))
+			}
 		}
 	}
 

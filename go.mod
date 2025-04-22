@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	github.com/Khan/genqlient v0.8.0
+	github.com/davecgh/go-spew v1.1.1
 	github.com/hashicorp/copywrite v0.22.0
 	github.com/hashicorp/terraform-plugin-docs v0.21.0
 	github.com/hashicorp/terraform-plugin-framework v1.14.1
