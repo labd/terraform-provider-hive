@@ -39,6 +39,7 @@ data "hive_schema_check" "check" {
 
 - `author` (String) The author of the version
 - `commit` (String) The commit or version identifier
+- `context_id` (String) Optional context ID to group schema checks together. Manually approved breaking changes will be memorized for schema checks with the same context id.
 - `project` (String) The project name
 - `target` (String) The target name
 

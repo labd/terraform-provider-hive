@@ -27,13 +27,14 @@ func (r *HiveSchemaCheckDataSource) Metadata(ctx context.Context, req datasource
 }
 
 type HiveSchemaCheckDataSourceModel struct {
-	Service types.String `tfsdk:"service"`
-	Commit  types.String `tfsdk:"commit"`
-	Author  types.String `tfsdk:"author"`
-	Schema  types.String `tfsdk:"schema"`
-	Id      types.String `tfsdk:"id"`
-	Target  types.String `tfsdk:"target"`
-	Project types.String `tfsdk:"project"`
+	Service   types.String `tfsdk:"service"`
+	Commit    types.String `tfsdk:"commit"`
+	Author    types.String `tfsdk:"author"`
+	Schema    types.String `tfsdk:"schema"`
+	ContextId types.String `tfsdk:"context_id"`
+	Id        types.String `tfsdk:"id"`
+	Target    types.String `tfsdk:"target"`
+	Project   types.String `tfsdk:"project"`
 }
 
 func (d *HiveSchemaCheckDataSource) Schema(ctx context.Context, _req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
@@ -69,6 +70,10 @@ func (d *HiveSchemaCheckDataSource) Schema(ctx context.Context, _req datasource.
 				Computed:            true,
 				MarkdownDescription: "The resource ID",
 			},
+			"context_id": schema.StringAttribute{
+				MarkdownDescription: "Optional context ID to group schema checks together. Manually approved breaking changes will be memorized for schema checks with the same context id.",
+				Optional:            true,
+			},
 		},
 	}
 }
@@ -100,12 +105,13 @@ func (r *HiveSchemaCheckDataSource) Read(ctx context.Context, req datasource.Rea
 	}
 
 	result, err := r.client.SchemaCheck(ctx, &sdk.SchemaCheckInput{
-		Service: data.Service.ValueString(),
-		Schema:  data.Schema.ValueString(),
-		Commit:  data.Commit.ValueString(),
-		Author:  data.Author.ValueString(),
-		Target:  data.Target.ValueString(),
-		Project: data.Project.ValueString(),
+		Service:   data.Service.ValueString(),
+		Schema:    data.Schema.ValueString(),
+		Commit:    data.Commit.ValueString(),
+		Author:    data.Author.ValueString(),
+		Target:    data.Target.ValueString(),
+		Project:   data.Project.ValueString(),
+		ContextId: data.ContextId.ValueString(),
 	})
 
 	if err != nil {
