@@ -6,6 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
+	"github.com/labd/terraform-provider-hive/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -104,9 +105,18 @@ func (r *HiveSchemaCheckDataSource) Read(ctx context.Context, req datasource.Rea
 		return
 	}
 
+	cleanedSchema, err := utils.CleanSchema(data.Schema.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Schema parsing failed",
+			fmt.Sprintf("Unable to parse and clean schema, got error: %s", err.Error()),
+		)
+		return
+	}
+
 	result, err := r.client.SchemaCheck(ctx, &sdk.SchemaCheckInput{
 		Service:   data.Service.ValueString(),
-		Schema:    data.Schema.ValueString(),
+		Schema:    cleanedSchema,
 		Commit:    data.Commit.ValueString(),
 		Author:    data.Author.ValueString(),
 		Target:    data.Target.ValueString(),

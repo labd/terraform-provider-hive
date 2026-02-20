@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/labd/terraform-provider-hive/internal/utils"
 
 	"github.com/labd/terraform-provider-hive/internal/sdk"
 )
@@ -194,9 +195,18 @@ func (r *HiveSchemaCheckResource) ImportState(ctx context.Context, req resource.
 }
 
 func (r *HiveSchemaCheckResource) ExecuteRequest(ctx context.Context, data *HiveSchemaCheckResourceModel) *diag.ErrorDiagnostic {
+	cleanedSchema, err := utils.CleanSchema(data.Schema.ValueString())
+	if err != nil {
+		d := diag.NewErrorDiagnostic(
+			"Schema parsing failed",
+			fmt.Sprintf("Unable to parse and clean schema, got error: %s", err.Error()),
+		)
+		return &d
+	}
+
 	result, err := r.client.SchemaCheck(ctx, &sdk.SchemaCheckInput{
 		Service:   data.Service.ValueString(),
-		Schema:    data.Schema.ValueString(),
+		Schema:    cleanedSchema,
 		Commit:    data.Commit.ValueString(),
 		Author:    data.Author.ValueString(),
 		ContextId: data.ContextId.ValueString(),

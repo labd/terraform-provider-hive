@@ -1,6 +1,9 @@
 version: '3'
 
 tasks:
+  default:
+    cmd: task --list-all
+
   build-local:
     cmds:
       - go run github.com/Khan/genqlient
