@@ -1,27 +1,26 @@
 package utils
 
 import (
-	"fmt"
+	"bytes"
 
-	"github.com/graphql-go/graphql/language/parser"
-	"github.com/graphql-go/graphql/language/printer"
+	"github.com/vektah/gqlparser/v2/ast"
+	"github.com/vektah/gqlparser/v2/formatter"
+	"github.com/vektah/gqlparser/v2/parser"
 )
 
 // CleanSchema parses and re-prints a GraphQL schema to normalize formatting.
 func CleanSchema(schema string) (string, error) {
-	docs, err := parser.Parse(parser.ParseParams{
-		Source: schema,
+	doc, err := parser.ParseSchema(&ast.Source{
+		Input: schema,
 	})
 	if err != nil {
 		return "", err
 	}
 
-	cleanedSchema := printer.Print(docs)
+	// Format the parsed schema document into a normalized string.
+	var buf bytes.Buffer
+	formatter.NewFormatter(&buf, formatter.WithCompacted(), formatter.WithIndent("")).FormatSchemaDocument(doc)
 
-	result, ok := cleanedSchema.(string)
-	if !ok {
-		return "", fmt.Errorf("expected string from printer, got %T", cleanedSchema)
-	}
 
-	return result, nil
+	return buf.String(), nil
 }
