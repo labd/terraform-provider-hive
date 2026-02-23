@@ -14,22 +14,22 @@ func TestCleanSchema(t *testing.T) {
 		{
 			name:     "simple type",
 			input:    "type Query { hello: String }",
-			expected: "type Query {\n  hello: String\n}\n",
+			expected: "type Query {\nhello: String\n}\n",
 		},
 		{
 			name:     "normalizes whitespace",
 			input:    "type   Query  {   hello:   String   }",
-			expected: "type Query {\n  hello: String\n}\n",
+			expected: "type Query {\nhello: String\n}\n",
 		},
 		{
 			name:     "multiple fields",
 			input:    "type Query { hello: String world: Int }",
-			expected: "type Query {\n  hello: String\n  world: Int\n}\n",
+			expected: "type Query {\nhello: String\nworld: Int\n}\n",
 		},
 		{
 			name:     "schema with description",
 			input:    `"A simple query" type Query { hello: String }`,
-			expected: "\"\"\"A simple query\"\"\"\ntype Query {\n  hello: String\n}\n",
+			expected: "\"\"\"\nA simple query\n\"\"\"\ntype Query {\nhello: String\n}\n",
 		},
 		{
 			name: "schema with comment blocks",
@@ -38,13 +38,19 @@ func TestCleanSchema(t *testing.T) {
 			#Test
 			### 
 			type Query { hello: String }`,
-			expected: "type Query {\n  hello: String\n}\n",
+			expected: "type Query {\nhello: String\n}\n",
 		},
 		{
 			name:     "empty string returns newline",
 			input:    "",
-			expected: "\n",
+			expected: "",
 		},
+		{
+			name:     "type with schema extension and directive",
+			input:    "extend schema\n@link(url: \"https://specs.apollo.dev/federation/v2.0\", import: [\"@key\"])\ntype Query { hello: String }",
+			expected: "extend schema @link(url: \"https://specs.apollo.dev/federation/v2.0\", import: [\"@key\"])\ntype Query {\nhello: String\n}\n",
+		},
+
 		{
 			name:      "invalid schema",
 			input:     "not a valid schema {{{",
