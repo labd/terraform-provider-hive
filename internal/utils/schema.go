@@ -17,17 +17,10 @@ func CleanSchema(schema string) (string, error) {
 		return "", err
 	}
 
-	// exec format
+	// Format the parsed schema document into a normalized string.
 	var buf bytes.Buffer
 	formatter.NewFormatter(&buf, formatter.WithCompacted(), formatter.WithIndent("")).FormatSchemaDocument(doc)
 
-	// validity check
-	_, err = parser.ParseSchema(&ast.Source{
-		Input: buf.String(),
-	})
-	if err != nil {
-		return "", err
-	}
 
 	return buf.String(), nil
 }

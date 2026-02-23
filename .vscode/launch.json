@@ -11,6 +11,6 @@
             "mode": "debug",
             "args": ["-debug"],
             "program": "main.go"
-        },
+        }
     ]
 }

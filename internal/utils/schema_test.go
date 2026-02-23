@@ -41,7 +41,7 @@ func TestCleanSchema(t *testing.T) {
 			expected: "type Query {\nhello: String\n}\n",
 		},
 		{
-			name:     "empty string returns newline",
+			name:     "empty string returns empty string",
 			input:    "",
 			expected: "",
 		},
