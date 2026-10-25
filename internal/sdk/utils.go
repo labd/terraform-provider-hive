@@ -1,7 +1,6 @@
 package sdk
 
 import (
-	"context"
 	"regexp"
 	"strings"
 
@@ -14,7 +13,7 @@ func minifySchema(schema string) string {
 	return strings.TrimSpace(re.ReplaceAllString(schema, " "))
 }
 
-func getTarget(ctx context.Context, organization string, project string, target string) *client.TargetReferenceInput {
+func getTarget(organization string, project string, target string) *client.TargetReferenceInput {
 	if organization == "" || project == "" || target == "" {
 		return nil
 	}

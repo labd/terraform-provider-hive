@@ -35,7 +35,7 @@ func (hc *HiveClient) SchemaPublish(ctx context.Context, input *SchemaPublishInp
 		Author:  input.Author,
 		Sdl:     minifySchema(input.Schema),
 		Url:     input.URL,
-		Target:  getTarget(ctx, hc.Organization, input.Project, input.Target),
+		Target:  getTarget(hc.Organization, input.Project, input.Target),
 	}
 
 	// Try to get the latest commit info from git if it's not provided.
