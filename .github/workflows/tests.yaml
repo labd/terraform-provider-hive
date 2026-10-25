@@ -30,16 +30,11 @@ jobs:
           args: --issues-exit-code=0 --timeout=5m
 
       - name: Run tests
-        run: go test -race -coverprofile=coverage.out -covermode=atomic -coverpkg=./... -v ./...
+        run: go test -race -v ./...
         env:
           TF_ACC: 1
           STORYBLOK_URL: https://mapi.storyblok.com
           STORYBLOK_TOKEN: foobar
-
-      - name: Upload to codecov
-        uses: codecov/codecov-action@75cd11691c0faa626561e295848008c8a7dddffe # v5.5.4
-        with:
-          verbose: true
 
       - name: build binary
         uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
