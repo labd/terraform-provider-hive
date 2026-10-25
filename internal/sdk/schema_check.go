@@ -50,7 +50,7 @@ func (hc *HiveClient) SchemaCheck(ctx context.Context, input *SchemaCheckInput) 
 		Sdl:       minifySchema(input.Schema),
 		Meta:      meta,
 		ContextId: input.ContextId,
-		Target:    getTarget(ctx, hc.Organization, input.Project, input.Target),
+		Target:    getTarget(hc.Organization, input.Project, input.Target),
 	}
 
 	data, err := client.SchemaCheck(ctx, *hc.client, vars)

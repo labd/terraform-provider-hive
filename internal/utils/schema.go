@@ -21,6 +21,5 @@ func CleanSchema(schema string) (string, error) {
 	var buf bytes.Buffer
 	formatter.NewFormatter(&buf, formatter.WithCompacted(), formatter.WithIndent("")).FormatSchemaDocument(doc)
 
-
 	return buf.String(), nil
 }
