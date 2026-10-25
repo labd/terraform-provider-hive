@@ -76,7 +76,7 @@ for more information about installing third-party providers.
 
 ## Requirements
 
-- [Go](https://golang.org/doc/install) >= 1.24
+- [Go](https://golang.org/doc/install) >= 1.25
 - [Task](https://taskfile.dev/installation/)
 - [Changie](https://github.com/miniscruff/changie)
 

@@ -1,7 +1,7 @@
 # AGENTS.md — terraform-provider-hive
 
 Terraform provider for [GraphQL Hive](https://graphql-hive.com/) written in Go.
-Module: `github.com/labd/terraform-provider-hive` | Go 1.24.0
+Module: `github.com/labd/terraform-provider-hive` | Go 1.25.0
 
 ## Build / Test / Lint Commands
 
